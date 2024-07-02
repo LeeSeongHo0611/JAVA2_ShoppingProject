@@ -37,6 +37,7 @@ public class MemberController {
             Member member = Member.createMember(memberFormDto, passwordEncoder);
             //데이터베이스에 저장
             memberService.saveMember(member);
+            System.out.println("회원가입 완료: " + member);
         }
         catch (IllegalStateException e){
             model.addAttribute("errorMessage",e.getMessage());
