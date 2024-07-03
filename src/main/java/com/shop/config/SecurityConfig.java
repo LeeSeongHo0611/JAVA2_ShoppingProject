@@ -19,8 +19,8 @@ public class SecurityConfig {
     @Autowired
     MemberService memberService;
 
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+//    @Autowired
+//    private CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,10 +38,10 @@ public class SecurityConfig {
         ).logout(logout-> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
                 .logoutSuccessUrl("/")
-        ).oauth2Login(oauthLogin -> oauthLogin
-                .defaultSuccessUrl("/")
-                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
-                .userService(customOAuth2UserService))
+//        ).oauth2Login(oauthLogin -> oauthLogin
+//                .defaultSuccessUrl("/")
+//                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+//                .userService(customOAuth2UserService))
         );
 
         http.exceptionHandling(exception -> exception
