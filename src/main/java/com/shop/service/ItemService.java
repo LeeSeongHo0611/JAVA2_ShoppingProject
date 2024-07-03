@@ -10,6 +10,7 @@ import com.shop.repository.ItemImgRepository;
 import com.shop.repository.ItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Log
 public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemImgService itemImgService;
@@ -40,6 +42,8 @@ public class ItemService {
             else
                 itemImg.setRepImgYn("N");
             itemImgService.saveItemImg(itemImg,itemImgFileList.get(i));
+            System.out.println("breakPoint");
+
         }
         return item.getId();
     }

@@ -11,21 +11,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${uploadPath}")
     private String uploadPath;
 
-    @Value("${mainImgLocation}")
-    private String mainImgLocation;
+    @Value("${mainUploadPath}")
+    private String mainUploadPath;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 로컬 파일 시스템 경로 설정
+        System.out.println("디버그");
+        // 상품 이미지 웹 에서 사용할 파일 경로 설정
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:///" + uploadPath);
+                .addResourceLocations(uploadPath);
 
-        // classpath 경로 설정 (기본 정적 리소스 경로)
-        registry.addResourceHandler("/main/**")
-                .addResourceLocations(mainImgLocation);
+        // 메인 이미지 웹 에서 사용할 파일 경로 설정
+        registry.addResourceHandler("/images/main/**")
+                .addResourceLocations(mainUploadPath);
 
-        // 기본 정적 리소스 경로
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/");
+        System.out.println("웹 엠브이시 컨피그 탓는지 확인");
     }
 }

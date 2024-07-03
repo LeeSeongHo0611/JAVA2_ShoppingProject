@@ -15,8 +15,11 @@ import java.util.List;
 @Log
 public class MainService {
 
-    @Value("${mainImgLocation}")
-    private String mainImgLocation;
+//    @Value("${mainImgLocation}")
+//    private String mainImgLocation;
+
+    @Value("${mainUploadPath}")
+    private String mainUploadPath;
 
     private final ResourceLoader resourceLoader;
 
@@ -27,19 +30,26 @@ public class MainService {
     public List<String> getMainImages() throws IOException {
         List<String> mainImages = new ArrayList<>();
 
-        // ResourceLoader를 사용하여 classpath 리소스를 로드합니다.
-        Resource resource = resourceLoader.getResource(mainImgLocation);
+        log.info("mainUploadPath: " + mainUploadPath);
+
+        // ResourceLoader를 사용하여 리소스를 로드합니다. -> "file:///" 있어야 getURI를 사용 가능해서 URI를 추출및 향상된 for 문 사용 가능
+        Resource resource = resourceLoader.getResource(mainUploadPath);
+        log.info("Resource URL: " + resource.getURI());
+
         // URI를 사용하여 Path 객체로 변환합니다.
         Path path = Paths.get(resource.getURI());
+        log.info("Resolved Path: " + path.toString());
 
-        // 디렉토리 내 모든 파일 경로를 리스트에 추가합니다.
+        // 디렉토리 내 파일이름을  리스트에 추가합니다. -> 에러: 파일경로
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             for (Path filePath : stream) {
                 String fileName = filePath.getFileName().toString();
-                // URL 경로로 변환하여 mainImages 리스트에 추가합니다.
-                mainImages.add("/images/main/" + fileName);
-                log.info("/images/main/" + fileName);
+                mainImages.add(fileName);
+                log.info(fileName);
             }
+        } catch (IOException e) {
+            log.severe("Error reading directory: " + e.getMessage());
+            throw e;
         }
 
         return mainImages;

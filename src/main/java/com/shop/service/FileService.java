@@ -15,7 +15,9 @@ public class FileService {
         UUID uuid = UUID.randomUUID(); // 랜덤으로 UUID를 생성
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String savedFileName = uuid.toString() + extension;
+        // 업로드 패스 뒤에 /슬래쉬 파일이름 붙임
         String fileUploadFullUrl = uploadPath+"/"+savedFileName;
+        log.info(" 상품 업로드 경로-> fileUploadFullUrl:"+fileUploadFullUrl);
         System.out.println(fileUploadFullUrl);
         FileOutputStream fos = new FileOutputStream(fileUploadFullUrl);
         fos.write(fileData);
