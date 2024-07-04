@@ -32,36 +32,66 @@
             text-align: center;
         }
         .slider-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
+            position: relative; /* 절대 위치 */
+            width: 1347px; /* 고정된 너비 */
+            height: 370px; /* 고정된 높이 */
             margin: auto;
             overflow: hidden;
         }
         .slides {
+
             display: flex;
             transition: transform 0.5s ease-in-out;
         }
         .slide {
-            min-width: 100%;
+            width: 1347px; /* 고정된 너비 */
+            height: 370px; /* 고정된 높이 */
             box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지가 슬라이드에 맞게 크기 조정 */
+        }
+
         .prev, .next {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0,0,0,0.5);
             color: white;
             border: none;
-            padding: 10px;
             cursor: pointer;
-            z-index: 100;
+            padding: 10px;
+            z-index: 1;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .prev {
-            left: 0;
+            left: 10px;
         }
         .next {
-            right: 0;
+            right: 10px;
+        }
+
+        /* 메인 베너 개수 카운트 */
+        .counter {
+            position: absolute;
+            bottom: 130px; /* 슬라이더 내부 하단에 고정 */
+            right: 100px; /* 슬라이더 내부 우측에 고정 */
+            background-color: rgba(150, 145, 145, 0.5); /* 배경색을 검정으로 하고 투명도 적용 */
+            color: white;
+            padding: 2px 8px; /* 상하 2px, 좌우 8px 패딩 */
+            border-radius: 10px; /* 둥근 테두리 */
+            font-size: 14px; /* 글꼴 크기 설정 */
         }
     </style>
 </head>
@@ -70,8 +100,8 @@
     <div id="carouselControls" class="carousel slide margin" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active item">
-                <img src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png"
-                     class="d-block w-100 banner" alt="First slide">
+                <!--                <img src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png"-->
+                <!--                     class="d-block w-100 banner" alt="First slide">-->
 
                 <!-- 슬라이더 HTML -->
                 <div class="slider-container">
@@ -82,6 +112,7 @@
                     </div>
                     <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
                     <button class="next" onclick="moveSlide(1)">&#10095;</button>
+                    <div class="counter" id="slideCounter">1 / 3</div>
                 </div>
             </div>
         </div>
@@ -139,6 +170,8 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         let currentSlide = 0;
+        let startX = 0;
+        let isDragging = false;
 
         function showSlide(index) {
             const slides = document.querySelector('.slides');
@@ -151,13 +184,75 @@
                 currentSlide = index;
             }
             slides.style.transform = 'translateX(' + (-currentSlide * 100) + '%)';
+            updateCounter();
         }
 
         function moveSlide(step) {
             showSlide(currentSlide + step);
         }
 
-        showSlide(currentSlide);
+        function updateCounter() {
+            const counter = document.getElementById('slideCounter');
+            const totalSlides = [[${#lists.size(mainImages)}]];
+            counter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function onTouchStart(event) {
+            startX = event.touches[0].clientX;
+            isDragging = true;
+        }
+
+        function onTouchMove(event) {
+            if (!isDragging) return;
+            const currentX = event.touches[0].clientX;
+            const diffX = startX - currentX;
+            if (diffX > 50) {
+                moveSlide(1);
+                isDragging = false;
+            } else if (diffX < -50) {
+                moveSlide(-1);
+                isDragging = false;
+            }
+        }
+
+        function onTouchEnd() {
+            isDragging = false;
+        }
+
+        function onMouseDown(event) {
+            startX = event.clientX;
+            isDragging = true;
+        }
+
+        function onMouseMove(event) {
+            if (!isDragging) return;
+            const currentX = event.clientX;
+            const diffX = startX - currentX;
+            if (diffX > 50) {
+                moveSlide(1);
+                isDragging = false;
+            } else if (diffX < -50) {
+                moveSlide(-1);
+                isDragging = false;
+            }
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.querySelector('.slider-container');
+            slider.addEventListener('touchstart', onTouchStart);
+            slider.addEventListener('touchmove', onTouchMove);
+            slider.addEventListener('touchend', onTouchEnd);
+            slider.addEventListener('mousedown', onMouseDown);
+            slider.addEventListener('mousemove', onMouseMove);
+            slider.addEventListener('mouseup', onMouseUp);
+            slider.addEventListener('mouseleave', onMouseUp); // 마우스가 슬라이더를 벗어났을 때 드래그 상태 해제
+            showSlide(currentSlide);
+        });
+
     </script>
 </th:block>
 </body>
