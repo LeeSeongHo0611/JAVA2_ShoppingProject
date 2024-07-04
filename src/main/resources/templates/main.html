@@ -5,7 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Image Slider</title>
+    <!-- Styles and scripts -->
     <style>
         .carousel-inner > .item {
             height: 350px;
@@ -39,7 +42,6 @@
             overflow: hidden;
         }
         .slides {
-
             display: flex;
             transition: transform 0.5s ease-in-out;
         }
@@ -97,6 +99,7 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <!-- Your HTML content -->
     <div id="carouselControls" class="carousel slide margin" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active item">
@@ -122,8 +125,8 @@
     <div th:if="${not #strings.isEmpty(itemSearchDto.searchQuery)}" class="center">
         <p class="h3 font-weight-bold" th:text="${itemSearchDto.searchQuery} + ' 검색결과'"></p>
     </div>
-    <div class="container text-center">
-        <div class="row row-cols-5">
+    <div class="container text-center" id="product-container">
+        <div class="row row-cols-5" id="product-row">
             <th:block th:each="item, status: ${items.getContent()}">
                 <div class="col">
                     <div class="card">
@@ -141,30 +144,10 @@
             </th:block>
         </div>
     </div>
-    <div th:with="start=${(items.number/maxPage)*maxPage +1},
-            end=(${(items.totalPages == 0) ? 1 : (start + (maxPage-1) < items.totalPages ?
-            start + (maxPage - 1) : items.totalPages)})">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${items.number eq 0}?'disabled'">
-                <a th:href="@{'/' + '?searchQuery=' + ${itemSearchDto.searchQuery} + '&page=' + ${items.number-1}}"
-                   aria-label='Previous' class="page-link">
-                    <span aria-hidden="true">Previous</span>
-                </a>
-            </li>
-            <li class="page-item" th:each="page: ${#numbers.sequence(start,end)}"
-                th:classappend="${items.number eq page-1}?'active':''">
-                <a th:href="@{'/' + '?searchQuery=' + ${itemSearchDto.searchQuery} + '&page=' +${page -1}}"
-                   th:inline="text" class="page-link">[[${page}]]</a>
-            </li>
-            <li class="page-item" th:classappend="${items.number+1 ge items.totalPages}?'disabled'">
-                <a th:href="@{'/' + '?searchQuery=' + ${itemSearchDto.searchQuery} + '&page=' + ${items.number + 1}}"
-                   aria-label="Next" class="page-link">
-                    <span aria-hidden="true">Next</span>
-                </a>
-            </li>
-        </ul>
+    <div id="footer" class="center" style="display: none;">
+        <p class="h4">Footer Content Here</p>
     </div>
-</div> <!-- layout:fragment="content" 닫기 -->
+</div>
 
 <!-- JavaScript -->
 <th:block layout:fragment="script">
@@ -172,6 +155,9 @@
         let currentSlide = 0;
         let startX = 0;
         let isDragging = false;
+        let page = 0;
+        let isLoading = false;
+        const footer = document.getElementById('footer');
 
         function showSlide(index) {
             const slides = document.querySelector('.slides');
@@ -253,6 +239,82 @@
             showSlide(currentSlide);
         });
 
+        $(document).ready(function() {
+            let page = 0;
+            let isLoading = false;
+
+            // CSRF 토큰 및 헤더 이름 가져오기
+            const csrfToken = $('meta[name="_csrf"]').attr('content');
+            const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+            function loadItems() {
+                if (isLoading) return;
+                isLoading = true;
+                console.log(`Loading items for page ${page}`);
+
+                $.ajax({
+                    url: `/loadItems?page=${page}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    beforeSend: function(xhr) {
+                        // CSRF 토큰을 헤더에 설정
+                        xhr.setRequestHeader(csrfHeader, csrfToken);
+                    },
+                    success: function (data) {
+                        console.log('Data loaded successfully:', data);
+                        data.content.forEach(item => {
+                            $('#product-row').append(`
+                                <div class="col">
+                                    <div class="card">
+                                        <a href="/item/${item.id}" class="text-dark">
+                                            <img src="${item.imgUrl}" class="card-img-top" alt="${item.itemNm}" height="400">
+                                            <div class="card-body">
+                                                <h4 class="card-title">${item.itemNm}</h4>
+                                                <p class="card-text">${item.itemDetail}</p>
+                                                <h3 class="card-title text-danger">${item.price}원</h3>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            `);
+                        });
+                        page++;
+                        console.log(`Next page will be ${page}`);
+                        isLoading = false;
+
+                        if (!data.last) {
+                            const lastItem = $('#product-row .col:last')[0];
+                            if (lastItem) {
+                                observer.observe(lastItem);
+                            }
+                        } else {
+                            observer.disconnect();
+                            footer.style.display = 'block';
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error loading data:', error);
+                        isLoading = false;
+                    }
+                });
+            }
+
+            loadItems();
+
+            const observerOptions = {
+                root: null,
+                threshold: 0.5
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        observer.unobserve(entry.target);
+                        loadItems();
+                    }
+                });
+            }, observerOptions);
+        });
     </script>
 </th:block>
 </body>

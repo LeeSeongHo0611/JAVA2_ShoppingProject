@@ -11,9 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,4 +40,15 @@ public class MainController {
         model.addAttribute("maxPage", 5);
         return "main";
     }
+
+
+    @GetMapping(value = "/loadItems")
+    @ResponseBody
+    public Page<MainItemDto> loadItems(ItemSearchDto itemSearchDto, @RequestParam("page") int page) {
+        System.out.println("AJAX 통신 시작, 페이지: " + page);
+        Pageable pageable = PageRequest.of(page, 5);
+        return itemService.getMainItemPage(itemSearchDto, pageable);
+    }
+
+
 }
