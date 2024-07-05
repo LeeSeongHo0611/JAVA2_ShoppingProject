@@ -1,0 +1,124 @@
+.bg-custom-primary {
+    background-color: #5F0080;
+}
+
+/* 검색 버튼 기본 스타일 */
+.btn-custom-search {
+    color: #FFFFFF; /* 텍스트 색상 */
+    border-color: #5F0080; /* 테두리 색상 */
+}
+
+/* 검색 버튼 마우스 오버 시 스타일 */
+.btn-custom-search:hover {
+    background-color: #FFA500; /* 배경색 변경 */
+    color: #fff; /* 텍스트 색상 변경 */
+}
+
+/* 버튼 기본 스타일 */
+.btn-custom-primary {
+    margin-top: 1rem; /* 위쪽 여백 조정 */
+    width: 100px;
+    background-color: #5F0080;
+    color: #fff;
+}
+
+.btn-custom-primary:hover {
+    border: 1px solid #5F0080;
+    color: #5F0080;
+}
+
+.form-control-custom {
+    width: 400px; /* 고정 너비 설정 */
+}
+
+.form-label {
+    white-space: nowrap; /* 레이블이 줄바꿈되지 않도록 */
+    margin-top: 4px;
+    margin-right: 20px; /* 레이블과 입력 필드 간의 간격 */
+}
+
+.fieldError {
+    color: #bd2130;
+}
+
+.input-group-custom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap; /* 줄바꿈 방지 */
+}
+
+.input-group-custom .form-control-custom {
+    width: 400px; /* 고정 너비 설정 */
+    flex: none; /* 크기 변경 방지 */
+}
+
+.btn-custom-send {
+    margin-left: 10px;
+    white-space: nowrap;
+    flex: none; /* 크기 변경 방지 */
+    border: 1px solid #5F0080;
+    color: #5F0080;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+    max-width: 600px; /* 고정 너비 설정 */
+}
+
+.form-group.row {
+    display: flex;
+    flex-wrap: nowrap; /* 줄바꿈 방지 */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.form-group > label {
+    flex: 0 0 150px; /* 레이블의 고정 너비 설정 */
+}
+
+.form-group > div {
+    flex: 1; /* 입력 필드의 가변 너비 설정 */
+    display: flex;
+    align-items: center;
+}
+.centered-title {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.social-login-link {
+    display: block;
+    margin: 5px 0;
+    text-align: center;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.social-login-link:hover {
+    text-decoration: underline;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-box {
+    width: 0;
+    opacity: 0;
+    transition: width 0.4s, opacity 0.4s;
+}
+
+.search-box.active {
+    width: 300px; /* 원하는 크기로 설정 */
+    opacity: 1;
+}

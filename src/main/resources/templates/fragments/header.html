@@ -1,9 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <script type="text/javascript" src="/common/js/esabsbuxkr.js?single"></script> <!-- 220117 수정 -->
+    <script src="//connect.facebook.net/ko_KR/sdk.js"></script>
+    <script src="//www.google-analytics.com/analytics.js"></script>
+    <link rel="stylesheet" href="/common/css/custom.css"> <!-- custom.css 경로 설정 -->
+</head>
+<body>
 <div th:fragment="header">
-    <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
-        <div class="container-fluid"> <!--경고에요 -->
+    <!-- JavaScript for expanding search box -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var searchButton = document.querySelector('.btn_search a');
+            var searchBox = document.querySelector('.search-box');
+
+            searchButton.addEventListener('click', function() {
+                searchBox.classList.toggle('active');
+                if (searchBox.classList.contains('active')) {
+                    searchBox.setAttribute('placeholder', '검색어를 입력해주세요');
+                } else {
+                    searchBox.setAttribute('placeholder', '');
+                }
+            });
+        });
+    </script>
+    <nav class="navbar navbar-expand-lg bg-custom-primary navbar-dark">
+        <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarTogglerDemo03"
                     aria-controls="navbarTogglerDemo03"
@@ -33,13 +56,20 @@
                         <a class="nav-link" href="/members/logout">로그아웃</a>
                     </li>
                 </ul>
-                <form class="d-flex" th:action="@{/}" method="get">
-                    <input name="searchQuery" class="form-control me-2" type="search"
-                           placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
+                <div class="search-container">
+                    <input name="searchQuery" class="form-control search-box me-2" type="search"
+                           placeholder="" aria-label="Search">
+                    <p class="btn_search">
+                        <a href="javascript:void(0);">
+                            <!--                            스타벅스 검은돋보기이미지-->
+                            <img alt="통합검색" src="//image.istarbucks.co.kr/common/img/common/icon_magnifier_black.png">
+                        </a>
+                    </p>
+                    <button class="btn btn-custom-search my-2 my-sm-0" type="submit">Search</button>
+                </div>
             </div>
         </div>
     </nav>
 </div>
+</body>
 </html>
