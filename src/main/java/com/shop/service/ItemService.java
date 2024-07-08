@@ -31,6 +31,7 @@ public class ItemService {
     public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList)
             throws Exception{
         //상품등록
+        log.info("====================start:saveItem======================");
         Item item = itemFormDto.createItem();
         itemRepository.save(item);
         //이미지 등록
@@ -45,11 +46,13 @@ public class ItemService {
             System.out.println("breakPoint");
 
         }
+        log.info("====================END:saveItem======================");
         return item.getId();
     }
 
     @Transactional(readOnly = true)
     public ItemFormDto getItemDtl(Long itemId){
+        log.info("====================start:getItemDtl======================");
         //Entity
         List<ItemImg> itemImgList = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
         //DB에서 데이터를 가지고 옵니다.
@@ -66,11 +69,13 @@ public class ItemService {
         // Item -> ItemFormDto modelMapper
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
+        log.info("====================END:getItemDtl======================");
         return itemFormDto;
     }
 
     public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList)
             throws Exception{
+        log.info("====================start:updateItem======================");
         //상품 변경
         Item item = itemRepository.findById(itemFormDto.getId()).
                 orElseThrow(EntityNotFoundException::new);
@@ -81,15 +86,18 @@ public class ItemService {
         for(int i =0; i<itemImgFileList.size();i++){
             itemImgService.updateItemImg(itemImgIds.get(i), itemImgFileList.get(i));
         }
+        log.info("====================END:updateItem======================");
         return item.getId();
     }
     @Transactional(readOnly = true) // 쿼리문 실행 읽기만 한다.
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
+        log.info("====================start:getAdminItemPage======================");
         return itemRepository.getAdminItemPage(itemSearchDto,pageable);
     }
 
     @Transactional(readOnly = true)
     public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
+        log.info("====================start:getAdminItemPage======================");
         return itemRepository.getMainItemPage(itemSearchDto, pageable);
     }
 

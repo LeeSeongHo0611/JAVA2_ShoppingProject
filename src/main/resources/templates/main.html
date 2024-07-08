@@ -152,6 +152,7 @@
 <!-- JavaScript -->
 <th:block layout:fragment="script">
     <script th:inline="javascript">
+        //메인 베너 스크롤러
         let currentSlide = 0;
         let startX = 0;
         let isDragging = false;
@@ -245,8 +246,9 @@
 
         });
 
+        //무한스크롤러 - AJAX HTML 데이터 가저오기
         $(document).ready(function() {
-            let page = 0;
+            let page = 1;
             let isLoading = false;
 
             // CSRF 토큰 및 헤더 이름 가져오기
@@ -305,6 +307,7 @@
                 });
             }
 
+            //무한스크롤러 - 작동 조건
             loadItems();
 
             const observerOptions = {
@@ -312,6 +315,7 @@
                 threshold: 0.5
             };
 
+            //무한스크롤러 - 기능
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {

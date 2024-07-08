@@ -4,6 +4,7 @@ import com.shop.entity.ItemImg;
 import com.shop.repository.ItemImgRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import org.thymeleaf.util.StringUtils;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Log
 public class ItemImgService {
     @Value("${itemImgLocation}") //application.properties에 itemImgLocation
     private String itemImgLocation;
@@ -20,6 +22,7 @@ public class ItemImgService {
     private final ItemImgRepository itemImgRepository;
     private final FileService fileService;
     public void saveItemImg(ItemImg itemImg, MultipartFile itemImgFile) throws Exception{
+        log.info("=============start==============");
 
         String oriImgName = itemImgFile.getOriginalFilename(); // 오리지날 이미지 경로
         String imgName = "";
@@ -41,9 +44,11 @@ public class ItemImgService {
         itemImg.updateItemImg(oriImgName, imgName, imgUrl);
         System.out.println("(((((");
         itemImgRepository.save(itemImg);
+        log.info("=============END==============");
     }
 
     public void updateItemImg(Long itemImgId, MultipartFile itemImgFile) throws Exception{
+        log.info("=============start==============");
         if(!itemImgFile.isEmpty()){ // 상품의 이미지를 수정한 경우 상품 이미지 업데이트
             ItemImg savedItemImg = itemImgRepository.findById(itemImgId).
                     orElseThrow(EntityNotFoundException::new); // 기존 엔티티 조회
@@ -63,6 +68,7 @@ public class ItemImgService {
             // 트랜잭션이 끝날때 update 쿼리가 실행 된다.
             //※ 영속성 상태여야함 사용가능
             savedItemImg.updateItemImg(oriImgName, imgName, imgUrl);
+            log.info("=============END==============");
         }
     }
 }

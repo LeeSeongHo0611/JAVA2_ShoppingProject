@@ -11,6 +11,7 @@ import com.shop.entity.Item;
 import com.shop.entity.QItem;
 import com.shop.entity.QItemImg;
 import jakarta.persistence.EntityManager;
+import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +19,13 @@ import org.thymeleaf.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+@Log
 
 public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
     private JPAQueryFactory queryFactory; // 동적쿼리 사용하기 위해 JPAQueryFactory 변수 선언
     // 생성자
     public ItemRepositoryCustomImpl(EntityManager em){
+        log.info("ItemRepositoryCustomImpl");
         this.queryFactory = new JPAQueryFactory(em); // JPAQueryFactory 실질적인 객체가 만들어 집니다.
     }
     private BooleanExpression searchSellStatusEq(ItemSellStatus searchSellStatus){

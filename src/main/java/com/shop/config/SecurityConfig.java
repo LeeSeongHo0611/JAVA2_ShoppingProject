@@ -28,8 +28,10 @@ public class SecurityConfig {
         http.authorizeRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**","/img/**","/favicon.ico","/error").permitAll()
                 .requestMatchers("/","/members/**","/item/**","/images/**").permitAll()
+                .requestMatchers("/loadItems").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
+
         ).formLogin(formLogin -> formLogin
                 .loginPage("/members/login")
                 .defaultSuccessUrl("/")
@@ -42,6 +44,13 @@ public class SecurityConfig {
         )
         .csrf(csrf -> csrf
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+
+        ).csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/admin/item/new") // 이 경로에서 CSRF 보호 비활성화
+
+
+        ).csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/") // AJAX 상품 전체 목록 표시 URL CSRF 보호 비활성화 - 모든 상품은 고객 관리자 모두 볼수 있어야 한다.
 
 
 //        ).oauth2Login(oauthLogin -> oauthLogin
