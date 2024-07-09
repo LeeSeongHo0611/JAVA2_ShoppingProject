@@ -68,9 +68,11 @@ public class ItemService {
     public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList)
             throws Exception{
         //상품 변경
+        System.out.println("상품 1 "+itemFormDto.getId());
         Item item = itemRepository.findById(itemFormDto.getId()).
                 orElseThrow(EntityNotFoundException::new);
         item.updateItem(itemFormDto);
+        System.out.println("상품 2 "+itemFormDto.getId());
         //상품 이미지 변경
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
 
