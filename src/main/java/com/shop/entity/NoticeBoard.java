@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -23,6 +24,9 @@ public class NoticeBoard extends BaseEntity {
     private Long id; // 게시글 번호
     private String title; // 제목
     private String content; // 내용
+    @ColumnDefault("0")
+    @Column(nullable = false)
+    private int view;
 
     public void updateNoticeBd(NoticeBoardDto noticeBoardDto){
         this.title = noticeBoardDto.getTitle();

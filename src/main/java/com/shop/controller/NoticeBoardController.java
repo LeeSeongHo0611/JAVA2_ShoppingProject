@@ -5,6 +5,9 @@ import com.shop.dto.NoticeBoardSearchDto;
 import com.shop.entity.NoticeBoard;
 import com.shop.service.NoticeBoardService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -54,17 +57,42 @@ public class NoticeBoardController {
     }
 
     @GetMapping(value = "/boards/newBd/{noticeBdId}")
-    public String noticeBdDtl(@PathVariable("noticeBdId")Long noticeBdId, Model model){
+    public String noticeBdDtl(@PathVariable("noticeBdId") Long noticeBdId, Model model, HttpServletRequest request,
+                              HttpServletResponse response) {
         try {
+            // 쿠키에서 조회한 게시글 ID 목록 가져오기
+            Cookie[] cookies = request.getCookies();
+            String newCookie = noticeBdId + "_";
+            boolean viewed = false;
+
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("views") && cookie.getValue().contains(newCookie)) {
+                        viewed = true;
+                        break;
+                    }
+                }
+            }
+
+            // 이미 조회한 적이 없는 경우에만 조회수 증가 및 쿠키 추가
+            if (!viewed) {
+                noticeBoardService.incrementViews(noticeBdId); // 조회수 증가
+                Cookie cookie = new Cookie("views", newCookie);
+                cookie.setMaxAge(24 * 60 * 60); // 쿠키 유효 기간 설정 (24시간)
+                cookie.setPath("/"); // 쿠키 경로 설정 (사이트 전역에서 사용)
+                response.addCookie(cookie); // 쿠키 추가
+            }
+
+            // 게시글 상세 정보 가져오기
             NoticeBoardDto noticeBoardDto = noticeBoardService.getNoticeBdDtl(noticeBdId);
             model.addAttribute("noticeBoardDto", noticeBoardDto);
-            System.out.println(noticeBoardDto.getId()+"????ADADAD");
-            System.out.println(noticeBdId);
-        }catch (EntityNotFoundException e){
-            model.addAttribute("errorMessage", "존재 하지 않는 게시물 입니다.");
+
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("errorMessage", "존재하지 않는 게시물입니다.");
             model.addAttribute("noticeBoardDto", new NoticeBoardDto());
             return "noticeBoard/noticeBdForm";
         }
+
         return "noticeBoard/noticeBdForm";
     }
 

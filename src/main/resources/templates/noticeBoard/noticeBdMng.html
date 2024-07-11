@@ -43,24 +43,22 @@
                 <td>등록자</td>
                 <td>등록일</td>
                 <td>조회수</td>
-                <a class="nav-link" href="/boards/newBd">공지쓰기</a>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="noticeBoards, status : ${noticeBoards.getContent()}">
-                <td th:text="${noticeBoards.id}"></td>
+            <tr th:each="noticeBoard : ${noticeBoards.content}">
+                <td th:text="${noticeBoard.id}"></td>
                 <td>
-                    <a th:href="'/boards/newBd/'+${noticeBoards.id}" th:text="${noticeBoards.id}"></a>
+                    <a th:href="'/boards/newBd/' + ${noticeBoard.id}" th:text="${noticeBoard.title}"></a>
                 </td>
-                <td th:text="${noticeBoards.createdBy}"></td>
-                <td th:text="${noticeBoards.regTime}"></td>
+                <td th:text="${noticeBoard.createdBy}"></td>
+                <td>
+                    <span th:text="${#temporals.format(noticeBoard.regTime, 'yyyy-MM-dd HH:mm')}"></span>
+                </td>
+                <td th:text="${noticeBoard.view}"></td>
             </tr>
             </tbody>
         </table>
-
-        <p th:text="${noticeBoards.number}"></p>
-        <p th:text="${noticeBoards.totalPages}"></p>
-
         <div th:with="start=${(noticeBoards.number/maxPage)*maxPage +1},
         end=(${(noticeBoards.totalPages == 0) ?
         1 : (start + (maxPage-1) < noticeBoards.totalPages ? start + (maxPage - 1) : noticeBoards.totalPages)})">
@@ -85,7 +83,7 @@
             </ul>
         </div>
 
-        <div class="row row-cols-lg-auto g-3 align-items-center" th:object="${NoticeBoardSearchDto}">
+        <div class="row row-cols-lg-auto g-3 align-items-center" th:object="${noticeBoardSearchDto}">
             <select th:field="*{searchDateType}" class="form-control" style="width:auto;">
                 <option value="all">전체기간</option>
                 <option value="1d">1일</option>
@@ -98,9 +96,11 @@
                 <option value="createdBy">등록자</option>
             </select>
             <input th:field="*{searchQuery}" type="text" class="form-control" style="width:auto; margin-right: 15px;" placeholder="검색어를 입력해주세요">
-            <button id="searchBtn" type="submit" class="form-control btn btn-primary" style="-width:auto">검색</button>
-            <a class="nav-link" href="/boards/newBd">공지쓰기</a>
+            <button id="searchBtn" type="submit" class="form-control btn btn-primary" style="width:auto">검색</button>
         </div>
+    </form>
+    <form onsubmit="return false;">
+        <button class="btn btn-primary" onclick="location.href='/boards/newBd'">글쓰기</button>
     </form>
 </div>
 </html>

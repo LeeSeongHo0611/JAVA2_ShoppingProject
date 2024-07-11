@@ -14,4 +14,6 @@ public interface NoticeBoardRepository extends JpaRepository<NoticeBoard, Long>,
 
     // select * from NoticeBd where title = ?(String title)
     List<NoticeBoard> findByTitle(String title); // 제목
+
+
 }

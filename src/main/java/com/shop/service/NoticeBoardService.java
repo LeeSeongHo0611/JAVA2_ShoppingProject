@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,26 +28,31 @@ public class NoticeBoardService {
 
     @Transactional(readOnly = true)
     public NoticeBoardDto getNoticeBdDtl(Long noticeBdId) {
-        System.out.println("@@@@@@@@@@@22");
         NoticeBoard noticeBoard = noticeBoardRepository.findById(noticeBdId).orElseThrow(EntityNotFoundException::new);
-        System.out.println("###############3");
         return NoticeBoardDto.of(noticeBoard);
     }
 
     public Long updateNoticeBd(NoticeBoardDto noticeBoardDto) throws Exception{
-        System.out.println("수정 3 "+noticeBoardDto.getId());
+
         NoticeBoard noticeBoard = noticeBoardRepository.findById(noticeBoardDto.getId()).
                 orElseThrow(EntityNotFoundException::new);
-        System.out.println("수정 4 "+noticeBoardDto.getId()   );
         noticeBoard.updateNoticeBd(noticeBoardDto);
-        System.out.println("수정 5 ");
-
         return noticeBoard.getId();
     }
 
     @Transactional(readOnly = true)
     public Page<NoticeBoard> getAdminNoticeBdPage(NoticeBoardSearchDto noticeBoardSearchDto, Pageable pageable){
         return noticeBoardRepository.getAdminNoticePage(noticeBoardSearchDto,pageable);
+    }
+
+    @Transactional
+    public void incrementViews(Long noticeBdId) {
+        NoticeBoard noticeBoard = noticeBoardRepository.findById(noticeBdId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + noticeBdId));
+
+        // 조회수 증가
+        noticeBoard.setView(noticeBoard.getView() + 1);
+        noticeBoardRepository.save(noticeBoard); // 변경사항 저장
     }
 }
 
