@@ -28,4 +28,8 @@ public class MainController {
         model.addAttribute("maxPage",5);
         return "main";
     }
+    @GetMapping(value = "/come")
+    public String coming(){
+        return "mapApi/comingRoute";
+    }
 }
