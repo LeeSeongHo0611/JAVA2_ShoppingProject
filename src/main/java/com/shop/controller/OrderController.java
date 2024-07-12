@@ -83,10 +83,10 @@ public class OrderController {
         log.info("유효성 검사 체크 완료 문제 없음. 로그인된 이메일:" + email);
 
 
-        // PayDto에 값을 넣기 위한 order 객체 추출
+        // 주문서 생성 및 결제 PayDto 생성
         Order order ;
         try {
-            // orderService로 인해 덮어짐
+            // 주문서 생성
             order = orderService.order(orderDto,email);
         }catch (Exception e){
             Map<String, Object> errorResponse = new HashMap<>();
@@ -113,14 +113,14 @@ public class OrderController {
     }
 
     // KG 이니지스 결제 취소 - JSON : 주문서 내역을 삭제
-    @PostMapping("/KGInigisOrderCancel")
+    @DeleteMapping("/KGInigisOrderDELETE")
     public @ResponseBody ResponseEntity<?> KGInigisOrderCancel(@RequestBody Map<String, Long> requestBody, Principal principal) {
         Long orderId = requestBody.get("orderId");
-        if (!orderService.validateOrder(orderId, principal.getName())) {
-            return new ResponseEntity<String>("주문 취소 권한이 없습니다.", HttpStatus.FORBIDDEN);
-        }
+        // 이전 주문 재고 카운트 롤백
         orderService.cancelOrder(orderId);
-        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+        // 주문 취소 -> 주문내역 삭제
+        orderService.deleteOrderById(orderId);
+        return ResponseEntity.ok("Order deleted successfully");
     }
 
 

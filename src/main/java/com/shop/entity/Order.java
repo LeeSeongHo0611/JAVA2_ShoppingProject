@@ -47,6 +47,7 @@ public class Order extends BaseEntity{
     // 상태는 주문으로 세팅
     // 주문 시간은 현재시간으로 세팅
     // 주문서 리턴
+
     public static Order createOrder(Member member, List<OrderItem> orderItemList){
         Order order = new Order();
         order.setMember(member);
@@ -75,5 +76,6 @@ public class Order extends BaseEntity{
         }
     }
 
-    public void
 }
+
+

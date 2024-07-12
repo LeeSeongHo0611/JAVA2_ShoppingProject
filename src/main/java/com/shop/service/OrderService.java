@@ -122,4 +122,14 @@ public class OrderService {
         return order.getId();
     }
 
+    // 주문내역 삭제 - KG 이니지스
+    @Transactional
+    public void deleteOrderById(Long orderId) {
+        if(orderRepository.existsById(orderId)){
+            orderRepository.deleteById(orderId);
+        } else {
+            throw new IllegalArgumentException("Invalid order ID: " + orderId);
+        }
+    }
+
 }

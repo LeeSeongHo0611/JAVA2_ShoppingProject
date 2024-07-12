@@ -14,6 +14,7 @@ import com.shop.repository.ItemRepository;
 import com.shop.repository.MemberRepository;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
@@ -24,6 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Log
 public class CartService {
     private final ItemRepository itemRepository;
     private final MemberRepository memberRepository;
@@ -31,6 +33,7 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final OrderService orderService;
     public Long addCart(CartItemDto cartItemDto, String email){
+        log.info("=========Start========");
         Item item = itemRepository.findById(cartItemDto.getItemId())
                 .orElseThrow(EntityExistsException::new);
         Member member = memberRepository.findByEmail(email);
@@ -54,6 +57,7 @@ public class CartService {
     }
     @Transactional(readOnly = true)
     public List<CartDetailDto> getCartList(String email){
+        log.info("=========Start========");
         List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
 
         Member member = memberRepository.findByEmail(email);
@@ -68,6 +72,7 @@ public class CartService {
 
     @Transactional(readOnly = true)
     public boolean validateCartItem(Long cartItemId, String email){
+        log.info("=========Start========");
         // email을 이용해서 Member 엔티티 객체 추출
         Member curMember = memberRepository.findByEmail(email);
         // cartItemId를 이용해서 CartItem 엔티티 객체 추출
@@ -83,18 +88,21 @@ public class CartService {
         return true;
     }
     public void updateCartItemCount(Long cartItemId, int count){
+        log.info("=========Start========");
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(EntityExistsException::new);
         cartItem.updateCount(count);
     }
 
     public void deleteCartItem(Long cartItemId){
+        log.info("=========Start========");
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(EntityExistsException::new);
         cartItemRepository.delete(cartItem);
     }
 
     public Long orderCartItem(List<CartOrderDto> cartOrderDtoList, String email){
+        log.info("=========Start========");
         // 주문DTO List 객체 생성
         List<OrderDto> orderDtoList = new ArrayList<>();
         // 카트 주문 List에 있는 목록 -> 카트 아이템 객체로 추출
