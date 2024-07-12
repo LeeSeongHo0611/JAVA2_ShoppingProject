@@ -3,6 +3,7 @@ package com.shop.service;
 import com.shop.dto.OrderDto;
 import com.shop.dto.OrderHistDto;
 import com.shop.dto.OrderItemDto;
+import com.shop.dto.PayDto;
 import com.shop.entity.*;
 import com.shop.repository.ItemImgRepository;
 import com.shop.repository.ItemRepository;
@@ -44,7 +45,7 @@ public class OrderService {
 //    }
 
 
-        public Order order(OrderDto orderDto, String email) {
+    public Order order(OrderDto orderDto, String email) {
         Item item = itemRepository.findById(orderDto.getItemId())
                 .orElseThrow(EntityNotFoundException::new);
         Member member = memberRepository.findByEmail(email);
@@ -57,6 +58,7 @@ public class OrderService {
         orderRepository.save(order);
         return order;
     }
+
 
     @Transactional(readOnly = true)
     public Page<OrderHistDto> getOrderList(String email, Pageable pageable){
