@@ -50,5 +50,9 @@ public class MainController {
         return itemService.getMainItemPage(itemSearchDto, pageable);
     }
 
+    @GetMapping(value = "/mapApi/comingRoute")
+    public String coming(){
+        return "mapApi/comingRoute";
+    }
 
 }

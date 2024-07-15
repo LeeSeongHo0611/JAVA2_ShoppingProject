@@ -26,38 +26,49 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**","/img/**","/favicon.ico","/error").permitAll()
-                .requestMatchers("/","/members/**","/item/**","/images/**").permitAll()
-                .requestMatchers("/loadItems").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                        .requestMatchers("/css/**", "/js/**","/img/**","/favicon.ico","/error").permitAll()
+                        .requestMatchers("/","/members/**","/item/**","/images/**","/noticeBoard/**").permitAll()
+                        .requestMatchers("/loadItems").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/mapApi/**").permitAll()
+                        .anyRequest().authenticated()
 
-        ).formLogin(formLogin -> formLogin
-                .loginPage("/members/login")
-                .defaultSuccessUrl("/")
-                .usernameParameter("email")
-                .failureUrl("/members/login/error")
+                ).formLogin(formLogin -> formLogin
+                        .loginPage("/members/login")
+                        .defaultSuccessUrl("/")
+                        .usernameParameter("email")
+                        .failureUrl("/members/login/error")
 
-        ).logout(logout-> logout
+                ).logout(logout-> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
                         .logoutSuccessUrl("/")
-        )
-        .csrf(csrf -> csrf
-        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 
-        ).csrf(csrf -> csrf
+                ).csrf(csrf -> csrf
                         .ignoringRequestMatchers("/admin/item/new") // 이 경로에서 CSRF 보호 비활성화
 
 
-        ).csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/") // AJAX 상품 전체 목록 표시 URL CSRF 보호 비활성화 - 모든 상품은 고객 관리자 모두 볼수 있어야 한다.
+                ).csrf(csrf -> csrf
+                                .ignoringRequestMatchers("/") // AJAX 상품 전체 목록 표시 URL CSRF 보호 비활성화 - 모든 상품은 고객 관리자 모두 볼수 있어야 한다.
+
+                ).csrf(csrf -> csrf
+                        // 유저 관리자 외부인 모두 지도를 볼수 있게 토큰 오픈
+                        .ignoringRequestMatchers("mapApi/**")
+                ).csrf(csrf -> csrf
+                        // 베스트 item 테스트를 하기 위한 html 오픈
+                        .ignoringRequestMatchers("item/**")
+                ).csrf(csrf -> csrf
+                        // 베스트 item img 테스트를 하기 위한 html 오픈
+                        .ignoringRequestMatchers("img/**"));
 
 
 //        ).oauth2Login(oauthLogin -> oauthLogin
 //                .defaultSuccessUrl("/")
 //                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
 //                .userService(customOAuth2UserService))
-        );
+
 
 
 

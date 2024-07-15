@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            $("#searchBtn").on("click",function(e){
+                e.preventDefault(); //검색버튼 클릭시 form 태그 전송을 막습니다.
+                page(0);
+            });
+        });
+
+        function page(page){
+            var searchDateType = $("#searchDateType").val();
+            var searchBy = $("#searchBy").val();
+            var searchQuery = $("#searchQuery").val();
+
+            location.href="/boards/notice/" + page + "?searchDateType=" + searchDateType
+            +"&searchBy=" + searchBy + "&searchQuery=" + searchQuery;
+
+        }
+    </script>
+</th:block>
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        select{
+            margin-right : 10px
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content">
+    <form th:action="@{'/boards/notice/'+${noticeBoards.number}}" role="form" method="get" th:object="${noticeBoards}">
+        <table class="table">
+            <thead>
+            <tr>
+                <td>NO</td>
+                <td>제목</td>
+                <td>등록자</td>
+                <td>등록일</td>
+                <td>조회수</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="noticeBoard : ${noticeBoards.content}">
+                <td th:text="${noticeBoard.id}"></td>
+                <td>
+                    <a th:href="'/boards/newBd/' + ${noticeBoard.id}" th:text="${noticeBoard.title}"></a>
+                </td>
+                <td th:text="${noticeBoard.createdBy}"></td>
+                <td>
+                    <span th:text="${#temporals.format(noticeBoard.regTime, 'yyyy-MM-dd HH:mm')}"></span>
+                </td>
+                <td th:text="${noticeBoard.view}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:with="start=${(noticeBoards.number/maxPage)*maxPage +1},
+        end=(${(noticeBoards.totalPages == 0) ?
+        1 : (start + (maxPage-1) < noticeBoards.totalPages ? start + (maxPage - 1) : noticeBoards.totalPages)})">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${noticeBoards.first}?'disabled'">
+                    <a th:onclick="'javascript:page('+${noticeBoards.number - 1} + ')'" aria-label='Previous'
+                       class="page-link">
+                        <span aria-hidden="true">Previous</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="page: ${#numbers.sequence(start,end)}"
+                    th:classappend="${noticeBoards.number eq page-1}?'active':''">
+                    <a th:onclick="'javascript:page('+${page -1} + ')'" th:inline="text"
+                       class="page-link">[[${page}]]</a>
+                </li>
+                <li class="page-item" th:classappend="${noticeBoards.last}?'disabled'">
+                    <a th:onclick="'javascript:page(' + ${noticeBoards.number + 1} + ')'" aria-label="Next"
+                       class="page-link">
+                        <span aria-hidden="true">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="row row-cols-lg-auto g-3 align-items-center" th:object="${noticeBoardSearchDto}">
+            <select th:field="*{searchDateType}" class="form-control" style="width:auto;">
+                <option value="all">전체기간</option>
+                <option value="1d">1일</option>
+                <option value="1w">1주</option>
+                <option value="1m">1개월</option>
+                <option value="6m">6개월</option>
+            </select>
+            <select th:field="*{searchBy}" class="form-control" style="width:auto;">
+                <option value="title">제목</option>
+                <option value="createdBy">등록자</option>
+            </select>
+            <input th:field="*{searchQuery}" type="text" class="form-control" style="width:auto; margin-right: 15px;" placeholder="검색어를 입력해주세요">
+            <button id="searchBtn" type="submit" class="form-control btn btn-primary" style="width:auto">검색</button>
+        </div>
+    </form>
+    <form onsubmit="return false;">
+        <button class="btn btn-primary" onclick="location.href='/boards/newBd'">글쓰기</button>
+    </form>
+</div>
+</html>

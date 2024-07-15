@@ -77,9 +77,11 @@ public class ItemService {
             throws Exception{
         log.info("====================start:updateItem======================");
         //상품 변경
+        System.out.println("상품 1 "+itemFormDto.getId());
         Item item = itemRepository.findById(itemFormDto.getId()).
                 orElseThrow(EntityNotFoundException::new);
         item.updateItem(itemFormDto);
+        System.out.println("상품 2 "+itemFormDto.getId());
         //상품 이미지 변경
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
 
@@ -99,6 +101,14 @@ public class ItemService {
     public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
         log.info("====================start:getAdminItemPage======================");
         return itemRepository.getMainItemPage(itemSearchDto, pageable);
+    }
+
+    public List<Item> getTopItems(int limit) {
+        return itemRepository.findTopItemsByOrderCount(limit);
+    }
+
+    public List<ItemImg> getItemImagesByIds(List<Long> itemIds) {
+        return itemRepository.findImagesByItemIds(itemIds);
     }
 
 }

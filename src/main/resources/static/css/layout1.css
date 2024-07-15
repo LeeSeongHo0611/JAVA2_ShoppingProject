@@ -12,8 +12,11 @@ body{
     right: 0;
     bottom: 0;
     width: 100%;
-    padding: 15px 0;
+    padding: 20px 0;
     text-align: center;
+    background-color: #333; /* 회색계열 배경색 지정 */
+    color: #fff; /* 글자 색상 지정 */
+    font-size: 1.2em; /* 원하는 글자 크기로 조정 */
 }
 .content{
     margin-bottom: 100px;
