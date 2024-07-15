@@ -48,11 +48,20 @@ $(document).ready(function() {
     });
 });
 
+function generateMerchantUid() {
+    var uid = 'merchant_' + Math.random().toString(36).substr(2, 9);
+    return uid.toString(); // 문자열 형변환 추가
+}
+
 function processKGInigisOrder(orderData, token, header) {
+
+    payment_uid = generateMerchantUid(); // 고유한 merchant_uid 생성
+
+
     IMP.request_pay({
         pg: 'html5_inicis', // KG 이니시스 결제
         pay_method: 'card',
-        merchant_uid: orderData.merchant_uid,
+        merchant_uid: payment_uid,
         name: orderData.payName,
         amount: orderData.payAmount,
         buyer_email: orderData.buyerEmail,
@@ -93,6 +102,6 @@ function cancelOrder(merchant_uid, token, header) {
         }
     })
     .catch(error => {
-        alert('주문 취소 중 오류가 발생했습니다: ' + error);
+        //alert('주문 취소 중 오류가 발생했습니다: ' + error);
     });
 }
