@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container text-center">
+        <div class="row row-cols-5">
+            <th:block th:each="item, status: ${items.getContent()}">
+                <div class="col">
+                    <div class="card">
+                        <a th:href="'/item/' + ${item.id}" class="text-dark">
+                            <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}"
+                                 height="400">
+                            <div class="card-body">
+                                <h4 class="card-title">[[${item.itemNm}]]</h4>
+                                <p class="card-text">[[${item.stockNumber}]]개</p>
+                                <h3 class="card-title text-danger">[[${item.price}]]원</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>
