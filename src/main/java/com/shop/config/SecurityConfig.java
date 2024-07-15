@@ -44,7 +44,12 @@ public class SecurityConfig {
 //                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
 //                .userService(customOAuth2UserService))
         ).csrf(csrf -> csrf
-                .ignoringRequestMatchers("mapApi/**"));
+                .ignoringRequestMatchers("mapApi/**")
+        ).csrf(csrf -> csrf
+                .ignoringRequestMatchers("item/**")
+        ).csrf(csrf -> csrf
+                .ignoringRequestMatchers("img/**"));
+
 
         http.exceptionHandling(exception -> exception
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));

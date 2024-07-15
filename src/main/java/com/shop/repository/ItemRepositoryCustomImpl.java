@@ -7,9 +7,7 @@ import com.shop.constant.ItemSellStatus;
 import com.shop.dto.ItemSearchDto;
 import com.shop.dto.MainItemDto;
 import com.shop.dto.QMainItemDto;
-import com.shop.entity.Item;
-import com.shop.entity.QItem;
-import com.shop.entity.QItemImg;
+import com.shop.entity.*;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,11 +23,13 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
     public ItemRepositoryCustomImpl(EntityManager em){
         this.queryFactory = new JPAQueryFactory(em); // JPAQueryFactory 실질적인 객체가 만들어 집니다.
     }
+
     private BooleanExpression searchSellStatusEq(ItemSellStatus searchSellStatus){
         return searchSellStatus == null ?
                 null : QItem.item.itemSellStatus.eq(searchSellStatus);
         //ItemSellStatus null이면 null 리턴 null 아니면 SELL, SOLD 둘중 하나 리턴
     }
+
     private  BooleanExpression regDtsAfter(String searchDateType){ // all, 1d, 1w, 1m 6m
         LocalDateTime dateTime = LocalDateTime.now(); // 현재시간을 추출해서 변수에 대입
 
@@ -47,6 +47,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
         return QItem.item.regTime.after(dateTime);
         //dateTime을 시간에 맞게 세팅 후 시간에 맞는 등록된 상품이 조회하도록 조건값 반환
     }
+
     private BooleanExpression searchByLike(String searchBy, String searchQuery){
         if(StringUtils.equals("itemNm",searchBy)){ // 상품명
             return QItem.item.itemNm.like("%"+searchQuery+"%");
@@ -55,6 +56,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
         }
         return null;
     }
+
     @Override
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
         QueryResults<Item> results = queryFactory.selectFrom(QItem.item).
@@ -70,6 +72,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
     private BooleanExpression itemNmLike(String searchQuery){
         return StringUtils.isEmpty(searchQuery) ? null : QItem.item.itemNm.like("%"+searchQuery+"%");
     }
+
     @Override
     public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
         QItem item = QItem.item;
@@ -86,5 +89,31 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
         List<MainItemDto> content = results.getResults();
         long total = results.getTotal();
         return new PageImpl<>(content, pageable,total);
+    }
+
+    @Override
+    public List<Item> findTopItemsByOrderCount(int limit) {
+        QItem item = QItem.item;
+        QOrderItem orderItem = QOrderItem.orderItem;
+
+        return queryFactory
+                .select(item)
+                .from(item)
+                .join(orderItem).on(item.id.eq(orderItem.item.id))
+                .groupBy(item)
+                .orderBy(orderItem.count.sum().desc())
+                .limit(limit)
+                .fetch();
+    }
+
+    @Override
+    public List<ItemImg> findImagesByItemIds(List<Long> itemIds) {
+        QItemImg itemImg = QItemImg.itemImg;
+
+        return queryFactory
+                .select(itemImg)
+                .from(itemImg)
+                .where(itemImg.item.id.in(itemIds)) // 아이템 ID로 필터링
+                .fetch();
     }
 }

@@ -67,9 +67,13 @@ public class NoticeBoardController {
 
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("views") && cookie.getValue().contains(newCookie)) {
-                        viewed = true;
-                        break;
+                    if (cookie.getName().equals("views")) {
+                        // 기존 쿠키 값을 가져와서 확인
+                        String cookieValue = cookie.getValue();
+                        if (cookieValue.contains(newCookie)) {
+                            viewed = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -77,7 +81,17 @@ public class NoticeBoardController {
             // 이미 조회한 적이 없는 경우에만 조회수 증가 및 쿠키 추가
             if (!viewed) {
                 noticeBoardService.incrementViews(noticeBdId); // 조회수 증가
-                Cookie cookie = new Cookie("views", newCookie);
+                StringBuilder updatedCookieValue = new StringBuilder(newCookie);
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if (cookie.getName().equals("views")) {
+                            updatedCookieValue.insert(0, cookie.getValue()); // 기존 값 앞에 추가
+                            break;
+                        }
+                    }
+                }
+                // 새로운 쿠키 생성 및 설정
+                Cookie cookie = new Cookie("views", updatedCookieValue.toString());
                 cookie.setMaxAge(24 * 60 * 60); // 쿠키 유효 기간 설정 (24시간)
                 cookie.setPath("/"); // 쿠키 경로 설정 (사이트 전역에서 사용)
                 response.addCookie(cookie); // 쿠키 추가

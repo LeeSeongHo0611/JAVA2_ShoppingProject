@@ -3,6 +3,7 @@ package com.shop.controller;
 import com.shop.dto.ItemFormDto;
 import com.shop.dto.ItemSearchDto;
 import com.shop.entity.Item;
+import com.shop.entity.ItemImg;
 import com.shop.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -113,6 +115,26 @@ public class ItemController {
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         model.addAttribute("item",itemFormDto);
         return "item/itemDtl";
+    }
+
+    @GetMapping(value = "/bestItem")
+    public String itemBest(Model model) {
+        int limit = 5;
+        List<Item> itemBest = itemService.getTopItems(limit);
+
+        // ID 리스트 추출
+        List<Long> itemIds = itemBest.stream()
+                .map(Item::getId)
+                .collect(Collectors.toList());
+
+        List<ItemImg> itemImages = itemService.getItemImagesByIds(itemIds); // 해당 ID에 맞는 이미지 가져오기
+
+        model.addAttribute("itemBest", itemBest);
+        model.addAttribute("itemImages", itemImages); // 이미지 정보 추가
+        System.out.println(itemBest+"베스트아이탬");
+        System.out.println(itemImages+"아이탬이미지");
+        System.out.println("break");
+        return "item/itemBest";
     }
 
 
