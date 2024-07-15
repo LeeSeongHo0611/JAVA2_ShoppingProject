@@ -48,11 +48,21 @@ $(document).ready(function() {
     });
 });
 
+function generateMerchantUid() {
+    var uid = 'paymenet_' + Math.random().toString(36).substr(2, 9);
+    return uid.toString(); // 문자열 형변환 추가
+}
+
+
 function processKGInigisOrder(orderData, token, header) {
+
+    paymenet_uid = generateMerchantUid(); // 고유한 지불 코드 paymenet_uid 생성
+
+    console.log("orderData:", orderData);  // orderData 객체 출력
     IMP.request_pay({
         pg: 'html5_inicis', // KG 이니시스 결제
         pay_method: 'card',
-        merchant_uid: orderData.merchant_uid,
+        merchant_uid: paymenet_uid,
         name: orderData.payName,
         amount: orderData.payAmount,
         buyer_email: orderData.buyerEmail,
@@ -63,8 +73,23 @@ function processKGInigisOrder(orderData, token, header) {
     }, function(rsp) { // callback
         if (rsp.success) {
             alert('결제가 완료되었습니다.');
+             var paymentData = {
+                imp_uid: rsp.imp_uid,          // 결제 고유 번호
+                merchant_uid: rsp.merchant_uid, // 주문 번호
+                pay_method: rsp.pay_method,    // 결제 방법
+                paid_amount: rsp.paid_amount,  // 결제 금액
+                status: rsp.status,            // 결제 상태
+                buyer_name: rsp.buyer_name,    // 구매자 이름
+                buyer_email: rsp.buyer_email,  // 구매자 이메일
+                buyer_tel: rsp.buyer_tel,      // 구매자 전화번호
+                buyer_addr: rsp.buyer_addr,    // 구매자 주소
+                buyer_postcode: rsp.buyer_postcode // 구매자 우편번호
+            };
+
+            console.log("paymentData:", paymentData);  // paymentData 객체 출력
             // 결제 성공 시 서버에 결제 정보를 전송하여 저장하는 로직 추가
             // savePaymentInfo(rsp, orderData.id, token, header);
+            location.href = '/';
         } else {
             if (rsp.error_msg) {
                 alert('결제에 실패하였습니다. 에러 내용: ' + rsp.error_msg);
@@ -93,6 +118,6 @@ function cancelOrder(merchant_uid, token, header) {
         }
     })
     .catch(error => {
-        alert('주문 취소 중 오류가 발생했습니다: ' + error);
+//        alert('주문 취소 중 오류가 발생했습니다: ' + error);
     });
 }
