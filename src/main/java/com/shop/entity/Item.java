@@ -33,8 +33,8 @@ public class Item extends BaseEntity{
     private int stockNumber; // 수량
 
     @Lob
-    @Column(nullable = false)
-    private String itemDetail; // 상품상세설명
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String itemDetail;
 
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus; // 상품판매 상태
