@@ -1,10 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    if (typeof kakao === 'undefined') {
-        console.error('Kakao Maps API is not loaded');
-        return;
-    }
-
-    kakao.maps.load(function() {
+    function initializeMap() {
         var mapContainer = document.getElementById('map'); // 지도를 표시할 div
         var mapOption = {
             center: new kakao.maps.LatLng(37.49100, 126.7206), // 지도의 중심좌표
@@ -35,5 +30,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
         infowindow.open(map, marker);
-    });
+    }
+
+    // Kakao Maps API 로드 여부를 확인하고, 로드된 경우 initializeMap 함수 호출
+    function loadKakaoMaps() {
+        if (typeof kakao !== 'undefined' && kakao.maps) {
+            kakao.maps.load(initializeMap);
+        } else {
+            console.error('Kakao Maps API is not loaded');
+        }
+    }
+
+    loadKakaoMaps();
 });
