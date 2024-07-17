@@ -3,19 +3,62 @@
 <head>
     <meta charset="utf-8">
 
-    <!--542c3f4f84c6261ffaf3ee221e60b977-->
+    <!-- Kakao Map API -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=08d598c19accaa77f8fd0ab6d3e3d3bd"></script>
     <script src="/js/map.js"></script>
     <style>
+        .banner {
+            background-image: url('YOUR_IMAGE_URL_HERE'); /* 배경 이미지 URL */
+            background-size: cover; /* 이미지 크기 조정 */
+            background-position: center; /* 이미지 중앙 정렬 */
+            height: 300px; /* 배너 높이 */
+            display: flex; /* 내용 중앙 정렬을 위한 플렉스 */
+            align-items: center; /* 세로 중앙 정렬 */
+            justify-content: center; /* 가로 중앙 정렬 */
+            color: white; /* 텍스트 색상 */
+            font-size: 24px; /* 텍스트 크기 */
+            font-weight: bold; /* 텍스트 강조 */
+        }
+
         #map {
-            width: 60%;
+            width: 80%;
             height: 400px;
             text-align: center;
-            margin: 0 auto;
+            margin: 20px auto; /* 위쪽 마진 추가 */
+        }
+
+        .map-title {
+            text-align: left; /* 제목 왼쪽 정렬 */
+            font-size: 24px; /* 제목 크기 */
+            font-weight: bold; /* 제목 강조 */
+            margin-bottom: 20px; /* 제목 아래 간격 */
+        }
+
+        .content-text {
+            margin: 20px auto; /* 텍스트 마진 추가 */
+            text-align: left; /* 텍스트 왼쪽 정렬 */
+            max-width: 800px; /* 텍스트 컨테이너 최대 너비 */
+        }
+
+        .footer-space {
+            margin-top: 40px; /* content와 footer 사이의 간격 조정 */
         }
     </style>
 </head>
 <body>
-<div id="map" layout:fragment="content"></div>
+<div layout:fragment="content">
+    <div class="banner">배너 내용 또는 텍스트</div><!-- 배너 추가 -->
+    <div class="content-text">
+        <div class="map-title">찾아오시는 길</div>
+        <h5>폰하우스에 방문해 주셔서 진심으로 감사드립니다</h5>
+        <div id="map"></div> <!-- 지도 -->
+        <p><span style="font-weight: bold; color: #ff0000;">주소</span> : 인천시 부평구 경원대로 1366, 스테이션 타워 7층</p>
+        <p>※부평역 지하상가 15번출구에서 50m 거리, 북인천우체국 맞은편, 메가커피, 정관장 있는 10층 건물의 7층입니다.</p>
+        <p><span style="font-weight: bold; color: #ff0000;">문의</span> : 000-0000-0000</p>
+        <p>감사합니다.</p>
+    </div>
+    <div class="footer-space"></div> <!-- footer와의 간격을 위한 div -->
+</div>
+
 </body>
 </html>

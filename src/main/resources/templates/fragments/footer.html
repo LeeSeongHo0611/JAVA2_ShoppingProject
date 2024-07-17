@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Title</title>
+    <link rel="stylesheet" href="style.css"> <!-- 필요한 경우 CSS 파일 링크 -->
+    <script src="/js/footer.js" defer></script> <!-- footer.js 파일 추가 -->
+</head>
 <div class="footer" th:fragment="footer">
     <footer class="page-footer font-small cyan darken-3">
-        <div class="footer-copyright text-center py-3">
-            2024 Shopping Mall TheJ WebSite
-            <a href="/mapApi/comingRoute">찾아 오시는 길 </a>
+        <div class="footer-copyright text-center py-3" style="font-size: 0.8em;">
+            <span>사업자등록번호: 111-22-333333</span> |
+            <span>주식회사 폰하우스</span> |
+            <span>대표이사: 이성호</span> |
+            <span>TEL: 1234-5678</span> |
+            <span>개인정보 보호책임자: 우건아</span>
+            <br style="margin-top: 20px;">
+            <a href="/mapApi/comingRoute" style="display: inline-block; padding: 5px 20px; margin-top: 10px; background-color: #555; color: white; text-decoration: none; border: 2px solid #444; border-radius: 0;">찾아 오시는 길</a>
+            <br style="margin-top: 20px;">
+            <span style="margin-top: 10px; display: inline-block;">ⓒ 2024 PhoneHouse Smart Company. All Rights Reserved.</span>
         </div>
     </footer>
 </div>

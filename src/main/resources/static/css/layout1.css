@@ -7,20 +7,23 @@ body{
     min-height: 100%;
 }
 .footer {
-    position: absolute;
+    position: absolute; /* 고정 위치 설정 */
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 0; /* 항상 하단에 위치 */
     width: 100%;
-    padding: 20px 0;
+    padding: 10px 0;
     text-align: center;
-    background-color: #333; /* 회색계열 배경색 지정 */
-    color: #fff; /* 글자 색상 지정 */
-    font-size: 1.2em; /* 원하는 글자 크기로 조정 */
+    background-color: #333; /* 배경색 */
+    color: #fff; /* 글자색 */
+    font-size: 0.8em; /* 작은 글씨 */
+    display: block; /* 기본적으로 보이게 설정 */
+    transition: transform 0.3s ease; /* 부드러운 애니메이션 효과 */
 }
 .content{
     margin-bottom: 100px;
     margin-top: 50px;
-    margin-left: 200px;
-    margin-right: 200px;
+    margin-left: 150px;
+    margin-right: 150px;
+    padding-bottom: 60px;
 }
