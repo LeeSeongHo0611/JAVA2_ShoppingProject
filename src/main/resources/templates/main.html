@@ -202,6 +202,13 @@
                     slide.style.backgroundColor = color; // 슬라이드 배경색 설정
                 });
             });
+
+            // 검색결과에 대한 무한스크롤러 작동
+            if ([[${not #strings.isEmpty(itemSearchDto.searchQuery)}]]) {
+                initializeInfiniteScroll(true);
+            } else {
+                initializeInfiniteScroll(false);
+            }
         });
 
         function extractColor(imageUrl, callback) {
@@ -237,8 +244,7 @@
             };
         }
 
-        // 무한 스크롤러 - AJAX HTML 데이터 가져오기
-        $(document).ready(function() {
+        function initializeInfiniteScroll(isSearch) {
             let page = 1;
             let isLoading = false;
 
@@ -250,8 +256,10 @@
                 isLoading = true;
                 console.log(`Loading items for page ${page}`);
 
+                const url = isSearch ? `/loadItems/search?page=${page}` : `/loadItems?page=${page}`;
+
                 $.ajax({
-                    url: `/loadItems?page=${page}`,
+                    url: url,
                     method: 'GET',
                     dataType: 'json',
                     beforeSend: function(xhr) {
@@ -311,7 +319,7 @@
                     }
                 });
             }, observerOptions);
-        });
+        }
     </script>
 </th:block>
 </body>
