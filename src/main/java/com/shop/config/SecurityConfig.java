@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/mapApi/**").permitAll()
                         .requestMatchers("/","/members/**","/item/**","/images/**","/noticeBoard/**").permitAll()
                         .requestMatchers("/loadItems").permitAll()
+                        .requestMatchers("/search").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
 
