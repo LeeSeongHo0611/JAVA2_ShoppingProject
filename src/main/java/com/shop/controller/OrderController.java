@@ -1,5 +1,6 @@
 package com.shop.controller;
 
+import com.shop.dto.CartDetailDto;
 import com.shop.dto.OrderDto;
 import com.shop.dto.OrderHistDto;
 import com.shop.dto.PayDto;
@@ -169,7 +170,46 @@ public class OrderController {
     public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model){
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 5);
 
-        Page<OrderHistDto> orderHistDtoList = orderService.getOrderList(principal.getName(), pageable);
+        // 내부 shop 로그인, 소셜 로그인에 따른 이메일 추출
+        String email = "";
+        List<CartDetailDto> cartDetailDtoList = null;
+
+        if (principal instanceof OAuth2AuthenticationToken) {
+            // 소셜 로그인인 경우
+            OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) principal;
+            OAuth2User oauth2User = oauth2Token.getPrincipal();
+            String registrationId = oauth2Token.getAuthorizedClientRegistrationId();
+
+            if ("kakao".equals(registrationId)) {
+                // 카카오 로그인 사용자의 이메일 추출
+                Map<String, Object> kakaoAccount = (Map<String, Object>) oauth2User.getAttributes().get("kakao_account");
+                email = (String) kakaoAccount.get("email");
+            } else if ("naver".equals(registrationId)) {
+                // 네이버 로그인 사용자의 이메일 추출
+                Map<String, Object> naverAccount = (Map<String, Object>) oauth2User.getAttributes().get("response");
+                email = (String) naverAccount.get("email");
+            } else if ("google".equals(registrationId)) {
+                // 구글 로그인 사용자의 이메일 추출
+                email = (String) oauth2User.getAttributes().get("email");
+            } else {
+                throw new IllegalArgumentException("Unexpected registration id: " + registrationId);
+            }
+
+
+
+        } else if (principal instanceof UsernamePasswordAuthenticationToken) {
+            // 일반 스프링 로그인인 경우
+            // UsernamePasswordAuthenticationToken을 사용하여 사용자 이름을 가져옴
+            UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken) principal;
+             email = authToken.getName();
+
+
+        } else {
+            // 일반 로그인 소셜로그인 모두 오류인 경우
+            throw new IllegalArgumentException("Unexpected principal type");
+        }
+
+        Page<OrderHistDto> orderHistDtoList = orderService.getOrderList(email, pageable);
 
         model.addAttribute("orders", orderHistDtoList);
         model.addAttribute("page", pageable.getPageNumber());
