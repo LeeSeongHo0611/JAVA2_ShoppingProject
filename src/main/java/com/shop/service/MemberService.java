@@ -19,6 +19,7 @@ public class MemberService implements UserDetailsService {
         validateDuplicateMember(member);
         return memberRepository.save(member); // 데이터베이스에 저장을 하라는 명령
     }
+
     private void validateDuplicateMember(Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail());
         if (findMember != null) {

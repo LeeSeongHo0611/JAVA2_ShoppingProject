@@ -8,6 +8,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,8 +50,46 @@ public class CartController {
 
     @GetMapping(value = "/cart")
     public String orderHist(Principal principal, Model model){
-        List<CartDetailDto> cartDetailDtoList = cartService.getCartList(principal.getName());
-        model.addAttribute("cartItems",cartDetailDtoList);
+        String email = null;
+        List<CartDetailDto> cartDetailDtoList = null;
+
+        if (principal instanceof OAuth2AuthenticationToken) {
+            // 소셜 로그인인 경우
+            OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) principal;
+            OAuth2User oauth2User = oauth2Token.getPrincipal();
+            String registrationId = oauth2Token.getAuthorizedClientRegistrationId();
+
+            if ("kakao".equals(registrationId)) {
+                // 카카오 로그인 사용자의 이메일 추출
+                Map<String, Object> kakaoAccount = (Map<String, Object>) oauth2User.getAttributes().get("kakao_account");
+                email = (String) kakaoAccount.get("email");
+            } else if ("naver".equals(registrationId)) {
+                // 네이버 로그인 사용자의 이메일 추출
+                Map<String, Object> naverAccount = (Map<String, Object>) oauth2User.getAttributes().get("response");
+                email = (String) naverAccount.get("email");
+            } else if ("google".equals(registrationId)) {
+                // 구글 로그인 사용자의 이메일 추출
+                email = (String) oauth2User.getAttributes().get("email");
+            } else {
+                throw new IllegalArgumentException("Unexpected registration id: " + registrationId);
+            }
+
+            // 소셜 로그인 사용자의 이메일을 사용하여 장바구니 리스트를 가져옴
+            cartDetailDtoList = cartService.getCartList(email);
+        } else if (principal instanceof UsernamePasswordAuthenticationToken) {
+            // 일반 스프링 로그인인 경우
+            // UsernamePasswordAuthenticationToken을 사용하여 사용자 이름을 가져옴
+            UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken) principal;
+            String username = authToken.getName();
+
+            // 일반 로그인 사용자의 이름을 사용하여 장바구니 리스트를 가져옴
+            cartDetailDtoList = cartService.getCartList(username);
+        } else {
+            // 일반 로그인 소셜로그인 모두 오류인 경우
+            throw new IllegalArgumentException("Unexpected principal type");
+        }
+
+        model.addAttribute("cartItems", cartDetailDtoList);
         return "cart/cartList";
     }
     @PatchMapping(value = "/cartItem/{cartItemId}")
