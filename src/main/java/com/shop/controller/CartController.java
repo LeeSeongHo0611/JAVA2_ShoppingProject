@@ -26,25 +26,69 @@ import java.util.Map;
 public class CartController {
     private final CartService cartService;
 
-    @PostMapping(value = "/cart")
+    @PostMapping(value = "/cart") // HTTP POST 요청을 처리하는 엔드포인트로 지정
     public @ResponseBody
     ResponseEntity order(@RequestBody @Valid CartItemDto cartItemDto,
                          BindingResult bindingResult, Principal principal) {
+
+        // 입력 데이터 검증 에러가 있는 경우
         if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             for (FieldError fieldError : fieldErrors) {
                 sb.append(fieldError.getDefaultMessage());
             }
+            // 에러 메시지를 포함한 400 BAD REQUEST 응답 반환
             return new ResponseEntity<String>(sb.toString(), HttpStatus.BAD_REQUEST);
         }
+
+        // 현재 인증된 사용자의 이메일 주소를 가져옴
         String email = principal.getName();
         Long cartItemId;
+
+
+        if (principal instanceof OAuth2AuthenticationToken) {
+            // 소셜 로그인인 경우
+            OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) principal;
+            OAuth2User oauth2User = oauth2Token.getPrincipal();
+            String registrationId = oauth2Token.getAuthorizedClientRegistrationId();
+
+            if ("kakao".equals(registrationId)) {
+                // 카카오 로그인 사용자의 이메일 추출
+                Map<String, Object> kakaoAccount = (Map<String, Object>) oauth2User.getAttributes().get("kakao_account");
+                email = (String) kakaoAccount.get("email");
+            } else if ("naver".equals(registrationId)) {
+                // 네이버 로그인 사용자의 이메일 추출
+                Map<String, Object> naverAccount = (Map<String, Object>) oauth2User.getAttributes().get("response");
+                email = (String) naverAccount.get("email");
+            } else if ("google".equals(registrationId)) {
+                // 구글 로그인 사용자의 이메일 추출
+                email = (String) oauth2User.getAttributes().get("email");
+            } else {
+                throw new IllegalArgumentException("Unexpected registration id: " + registrationId);
+            }
+
+        } else if (principal instanceof UsernamePasswordAuthenticationToken) {
+            // 일반 스프링 로그인인 경우
+            // UsernamePasswordAuthenticationToken을 사용하여 사용자 이름을 가져옴
+            UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken) principal;
+            email = authToken.getName();
+
+        } else {
+            // 일반 로그인 소셜로그인 모두 오류인 경우
+            throw new IllegalArgumentException("Unexpected principal type");
+        }
+
+        //********************************************
         try {
+            // cartService를 통해 장바구니에 항목을 추가하고, 추가된 항목의 ID를 반환받음
             cartItemId = cartService.addCart(cartItemDto, email);
         } catch (Exception e) {
+            // 에러가 발생한 경우 에러 메시지를 포함한 400 BAD REQUEST 응답 반환
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+
+        // 성공적으로 항목이 추가된 경우 항목 ID를 포함한 200 OK 응답 반환
         return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
     }
 
