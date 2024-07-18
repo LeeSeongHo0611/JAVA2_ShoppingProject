@@ -8,8 +8,8 @@
     <script src="/js/map.js"></script>
     <style>
         .banner {
-            background-image: url('YOUR_IMAGE_URL_HERE'); /* 배경 이미지 URL */
-            background-size: cover; /* 이미지 크기 조정 */
+            background-image: url('/img/logo.png'); /* img 폴더 안에 있는 이미지 파일 */
+            background-size: auto; /* 이미지 크기 조정 */
             background-position: center; /* 이미지 중앙 정렬 */
             height: 300px; /* 배너 높이 */
             display: flex; /* 내용 중앙 정렬을 위한 플렉스 */
@@ -20,34 +20,34 @@
             font-weight: bold; /* 텍스트 강조 */
         }
 
-        #map {
-            width: 80%;
-            height: 400px;
-            text-align: center;
-            margin: 20px auto; /* 위쪽 마진 추가 */
-        }
+                #map {
+                    width: 80%;
+                    height: 400px;
+                    text-align: center;
+                    margin: 20px auto; /* 위쪽 마진 추가 */
+                }
 
-        .map-title {
-            text-align: left; /* 제목 왼쪽 정렬 */
-            font-size: 24px; /* 제목 크기 */
-            font-weight: bold; /* 제목 강조 */
-            margin-bottom: 20px; /* 제목 아래 간격 */
-        }
+                .map-title {
+                    text-align: left; /* 제목 왼쪽 정렬 */
+                    font-size: 24px; /* 제목 크기 */
+                    font-weight: bold; /* 제목 강조 */
+                    margin-bottom: 20px; /* 제목 아래 간격 */
+                }
 
-        .content-text {
-            margin: 20px auto; /* 텍스트 마진 추가 */
-            text-align: left; /* 텍스트 왼쪽 정렬 */
-            max-width: 800px; /* 텍스트 컨테이너 최대 너비 */
-        }
+                .content-text {
+                    margin: 20px auto; /* 텍스트 마진 추가 */
+                    text-align: left; /* 텍스트 왼쪽 정렬 */
+                    max-width: 800px; /* 텍스트 컨테이너 최대 너비 */
+                }
 
-        .footer-space {
-            margin-top: 40px; /* content와 footer 사이의 간격 조정 */
-        }
+                .footer-space {
+                    margin-top: 40px; /* content와 footer 사이의 간격 조정 */
+                }
     </style>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="banner">배너 내용 또는 텍스트</div><!-- 배너 추가 -->
+    <div class="banner"></div><!-- 배너 추가 -->
     <div class="content-text">
         <div class="map-title">찾아오시는 길</div>
         <h5>폰하우스에 방문해 주셔서 진심으로 감사드립니다</h5>
