@@ -14,14 +14,12 @@
             bindDomEvent();
         });
 
+        /*7월19일 11시40분 변겅 - 파일 이름필드 말고 파일선택버튼만 클릭 반응하게*/
         function bindDomEvent(){
-            $(".imageFile.form-control").on("change", function(){
-                // c:\\images\\a.jpg
-                //a.jpg
+            $(".custom-file-input").on("change", function(){
+                // 파일 선택 시 파일 이름과 확장자 처리
                 var fileName = $(this).val().split("\\").pop();
-                var fileExt = fileName.substring(fileName.lastIndexOf(".")+1); // jpg
-                //확장자 추출
-                fileExt = fileExt.toLowerCase(); // 소문자 소환 JPEG -> jpeg
+                var fileExt = fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase();
 
                 if(fileExt != "jpg" && fileExt != "jpeg" && fileExt != "gif"
                 && fileExt != "png" && fileExt != "bmp"){
@@ -29,6 +27,14 @@
                     $(this).val("");
                     return;
                 }
+
+                // 파일 이름을 표시
+                $(this).siblings(".file-name").val(fileName);
+            });
+
+            $(".file-select-button").on("click", function() {
+                // 파일 선택 버튼 클릭 시 실제 파일 입력 필드 클릭
+                $(this).siblings(".custom-file-input").click();
             });
         }
     </script>
@@ -36,86 +42,223 @@
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
     <style>
-        .input-group{
-            margin-bottom : 15px;
+        /*7월19일 오후2시40분 추가*/
+        .input-group-text{
+            width: 200px;
         }
-        .img-div{
-            margin-bottom : 10px;
+        /*7월19일 오후1시10분 추가*/
+        .product-input-group {
+            display: flex; /* 요소를 한 줄에 배치 */
+            margin-bottom: 15px;
+            width: 615px; /* 모든 입력 필드의 고정 너비 설정 */
+            margin-left: 231px; /* 왼쪽 여백 추가 */
+            justify-content: center; /* 수평 중앙 정렬 */
+
         }
-        .fieldError{
-            color : #bd2130;
+
+        /*7월19일 오후1시10분 추가*/
+        .product-input-group-prepend {
+            display: flex; /* 요소를 한 줄에 배치 */
+            width: 200px;
+            margin-right: 5px; /* 우측 여백 */
+            flex-shrink: 0; /* 요소가 줄어들지 않도록 설정 */
         }
+
+        .input-group {
+           margin-bottom: 15px;
+           /*7월10일 오후 1시 추가*/
+           width: 615px; /* 모든 입력 필드의 고정 너비 설정 */
+           margin-left: 50px; /* 왼쪽 여백 추가 */
+           justify-content: center; /* 수평 중앙 정렬 */
+       }
+
+       /*7월10일 오전 11시30분*/
+       .input-group-prepend {
+           width: 200px;
+           margin-right: 5px; /*오후12시20분 우측여백*/
+       }
+
+       .img-div {
+           margin-bottom: 10px;
+       }
+
+       .fieldError {
+           color: #bd2130;
+       }
+
+       /* 7월11일 오전11시 red클래스 빨간색 추가 */
+       .red {
+           color: #ff0000;
+       }
+
+       /*7월11일 오후 4시0분 추가*/
+       /* 커스터마이징된 파일 입력 스타일 */
+       .custom-file-container {
+           display: flex; /* flex로 한 줄에 배치 */
+           align-items: center; /* 수직 가운데 정렬 */
+           width: 615px;
+           margin-left: 50px; /*위와 맞춰서 왼쪽여백*/
+
+       }
+
+       .custom-file-input {
+           display: none; /* 파일 입력 필드를 숨김 */
+           margin-left: 5px;
+       }
+
+       .file-label {
+           flex: 1; /* 크기 조정 */
+            max-width: 200px; /* 고정 너비 설정 */
+           display: flex;
+           align-items: center;
+           padding: 0.375rem 0.75rem;
+           border: 1px solid #ced4da;
+           border-radius: 0.25rem;
+           background-color: #fff;
+           margin-right: 10px; /* 파일 이름과 파일 선택 버튼 사이 여백 */
+       }
+
+       .file-name {
+           flex: 2; /* 크기 조정 */
+           max-width: 372px; /* 고정 너비 설정 */
+           padding: 0.375rem 0.75rem;
+           border: 1px solid #ced4da;
+           border-radius: 0.25rem;
+           background-color: #ffffff; /*7월11일 바탕색 회색에서 흰색으로변경*/
+           margin-right: 10px;
+           margin-left: 5px; /*7월11일 오후5시12분 여백추가*/
+
+       }
+
+       .file-select-button {
+           background-color: #5F0080;
+           color: #fff;
+           padding: 0.375rem 0.75rem;
+           border-radius: 0.25rem;
+           cursor: pointer;
+           width: 150px;
+           display: inline-block; /* width 속성이 반영되도록 설정 */
+           text-align: center; /* 텍스트 중앙 정렬 */
+       }
+       .file-input-group {
+           width: 100%;
+           display: flex;
+           align-items: center;
+           flex-wrap: nowrap;
+       }
+       .image-label {
+           width: 212px; /* 고정 너비 설정 */
+           margin-left: 200px;
+
+       }
+       .row{
+           width: 1000px;
+
+       .row mb-4{
+           width: 250px;
+       }
+
+
+       /*7월11일 오후4시0분 추가*/
     </style>
 </th:block>
 
 <div layout:fragment="content">
     <form role="form" class="container" method="post" enctype="multipart/form-data" th:object="${itemFormDto}">
         <p class="h2">상품 등록</p>
+        <p></p>
 
         <input type="hidden" th:field="*{id}">
 
-        <div class="row mb-4">
-            <select th:field="*{itemSellStatus}" class="form-select">
+        <!--7월11일 오후5시40분 판매상태 밑으로 이동해서 주석처리-->
+        <!--        <div class="row mb-4">-->
+        <!--            <select th:field="*{itemSellStatus}" class="form-select">-->
+        <!--                <option value="SELL">판매중</option>-->
+        <!--                <option value="SOLD_OUT">품절</option>-->
+        <!--            </select>-->
+        <!--        </div>-->
+
+        <!--7월19일 오후1시10분 input group를 product-input-group로 변경 위치조정위해-->
+        <div class="product-input-group">
+            <div class="product-input-group-prepend">
+                <span class="input-group-text">상품명<span class="red">[필수]</span></span>
+            </div>
+            <input type="text" th:field="*{itemNm}" class="form-control" style="width: 370px;" placeholder="상품명을 입력해주세요.">
+        </div>
+        <p th:if="${#fields.hasErrors('itemNm')}" th:errors="*{itemNm}" class="fieldError">Incorrect data</p>
+
+        <div class="product-input-group">
+            <div class="product-input-group-prepend">
+                <span class="input-group-text">가격<span class="red">[필수]</span></span>
+            </div>
+            <input type="number" th:field="*{price}" class="form-control" style="width: 370px;" placeholder="상품의 가격을 입력해주세요.">
+        </div>
+        <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="fieldError">Incorrect data</p>
+
+        <div class="product-input-group">
+            <div class="product-input-group-prepend">
+                <span class="input-group-text">판매상태</span>
+            </div>
+            <select th:field="*{itemSellStatus}" class="form-select" style="width: 370px;">
                 <option value="SELL">판매중</option>
                 <option value="SOLD_OUT">품절</option>
             </select>
         </div>
 
-
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">상품명</span>
+        <div class="product-input-group">
+            <div class="product-input-group-prepend">
+                <span class="input-group-text">재고<span class="red">[필수]</span></span>
             </div>
-            <input type="text" th:field="*{itemNm}" class="form-control" placeholder="상품명을 입력해주세요.">
-        </div>
-        <p th:if="${#fields.hasErrors('itemNm')}" th:errors="*{itemNm}" class="fieldError">Incorrect data</p>
-
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">가격</span>
-            </div>
-            <input type="number" th:field="*{price}" class="form-control" placeholder="상품의 가격을 입력해주세요.">
-        </div>
-        <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="fieldError">Incorrect data</p>
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">재고</span>
-            </div>
-            <input type="number" th:field="*{stockNumber}" class="form-control" placeholder="상품의 재고를 입력해주세요.">
+            <input type="number" th:field="*{stockNumber}" class="form-control" style="width: 370px;" placeholder="상품의 재고를 입력해주세요.">
         </div>
         <p th:if="${#fields.hasErrors('stockNumber')}" th:errors="*{stockNumber}" class="fieldError">Incorrect data</p>
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">상품 상세 내용</span>
+
+        <div class="product-input-group">
+            <div class="product-input-group-prepend">
+                <span class="input-group-text">상품 상세 내용<span class="red">[필수]</span></span>
             </div>
-            <textarea class="form-control" aria-label="With textarea" th:field="*{itemDetail}"></textarea>
+            <textarea class="form-control" style="width: 370px;" aria-label="With textarea" th:field="*{itemDetail}"></textarea>
         </div>
         <p th:if="${#fields.hasErrors('itemDetail')}" th:errors="*{itemDetail}" class="fieldError">Incorrect data</p>
 
-        <div th:if="${#lists.isEmpty(itemFormDto.itemImgDtoList)}">
+
+        <div th:if="${#lists.isEmpty(itemFormDto.itemImgDtoList)}" style="margin-top: 20px">
             <div class="row" th:each="num: ${#numbers.sequence(1,5)}">
-                <div class="input-group mb3">
-                    <label class="image input-group-text" th:text="상품이미지 + ${num}"></label>
-                    <input type="file" class="imageFile form-control" name="itemImgFile">
+                <div class="input-group file-input-group mb-3">
+                    <label class="image input-group-text image-label">
+                        <span th:text="'상품이미지 ' + ${num}"></span>
+                        <span th:if="${num == 1}" class="red">[필수]</span>
+                    </label>
+                    <div class="custom-file-container">
+                        <input type="file" class="custom-file-input imageFile" name="itemImgFile">
+                        <input type="text" class="file-name form-control" readonly>
+                        <span class="file-select-button">파일 선택</span>
+                    </div>
                 </div>
             </div>
         </div>
+
         <div th:if="${not #lists.isEmpty(itemFormDto.itemImgDtoList)}">
             <div class="row" th:each="itemImgDto, status: ${itemFormDto.itemImgDtoList}">
-                <div class="input-group mb3">
-                    <label class="image input-group-text" th:text="${not #strings.isEmpty(itemImgDto.oriImgName)} ?
-                    ${itemImgDto.oriImgName} : '상품이미지'+ ${status.index+1}"></label>
-                    <input type="file"  class="imageFile form-control" name="itemImgFile">
+                <div class="input-group file-input-group mb-3">
+                    <label class="image input-group-text" th:text="${not #strings.isEmpty(itemImgDto.oriImgName)} ? ${itemImgDto.oriImgName} : '상품이미지 ' + ${status.index + 1}"></label>
+                    <div class="custom-file-container">
+                        <!--7월11일 오후7시50분 th:field 에서 name 으로 변경-->
+                        <input type="file" class="custom-file-input imageFile" name="itemImgFile">
+                        <input type="text" class="file-name form-control" readonly>
+                        <span class="file-select-button">파일 선택</span>
+                    </div>
+                    <!--7월11일 오후7시50분 숨겨진필드도 th:field 에서 name 으로 변경-->
                     <input type="hidden" name="itemImgIds" th:value="${itemImgDto.id}">
                 </div>
             </div>
         </div>
 
-        <div th:if="${#strings.isEmpty(itemFormDto.id)}" style="text-align : center">
-            <button th:formaction="@{/admin/item/new}" type="submit" class="btn btn-primary">저장</button>
+        <div th:if="${#strings.isEmpty(itemFormDto.id)}" style="text-align: center">
+            <button th:formaction="@{/admin/item/new}" type="submit" class="btn btn-primary" style="background-color: #5F0080">저장</button>
         </div>
-        <div th:unless="${#strings.isEmpty(itemFormDto.id)}" style="text-align : center">
-            <button th:formaction="@{'/admin/item/'+${itemFormDto.id}}" type="submit" class="btn btn-primary">수정</button>
+        <div th:unless="${#strings.isEmpty(itemFormDto.id)}" style="text-align: center">
+            <button th:formaction="@{'/admin/item/' + ${itemFormDto.id}}" type="submit" class="btn btn-primary" style="background-color: #5F0080">수정</button>
         </div>
 
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
