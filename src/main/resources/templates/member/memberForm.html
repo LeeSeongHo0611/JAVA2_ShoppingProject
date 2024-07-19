@@ -4,9 +4,80 @@
       layout:decorate="~{layouts/layout1}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>회원가입</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/custom.css"> <!-- 여기에 custom.css 경로를 넣으세요 -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 480px;
+        }
+
+        .centered-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+            color: #5f0080;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .btn-custom-primary {
+            background-color: #5f0080;
+            border-color: #5f0080;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .btn-custom-primary:hover {
+            background-color: #4a0066;
+            border-color: #4a0066;
+        }
+
+        .btn-custom-secondary {
+            background-color: #5f0080;
+            border-color: #5f0080;
+            color: white;
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+
+        .btn-custom-secondary:hover {
+            background-color: #4a0066;
+            border-color: #4a0066;
+        }
+
+        .fieldError {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        .input-group-custom {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-check-label {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
 <!-- 사용자 스크립트 추가 -->
@@ -21,47 +92,47 @@
     </script>
 </th:block>
 
-
-
 <div layout:fragment="content" class="container">
     <h1 class="centered-title">회원가입</h1>
     <form action="/members/new" role="form" method="post" th:object="${memberFormDto}">
         <div class="form-group row">
             <label th:for="name" class="col-sm-3 col-form-label">이름</label>
             <div class="col-sm-9">
-                <input type="text" th:field="*{name}" class="form-control form-control-custom" placeholder="이름을 입력해주세요.">
-                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">Incorrect data</p>
+                <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력해주세요.">
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">이름을 입력해주세요.</p>
             </div>
         </div>
         <div class="form-group row">
             <label th:for="email" class="col-sm-3 col-form-label">이메일 주소</label>
-            <div class="col-sm-6 input-group-custom">
-                <input type="text" th:field="*{email}" class="form-control form-control-custom" placeholder="이메일을 입력해주세요.">
-                <button class="btn btn-custom-send" id="e_2" type="button" onclick="mailSend()">인증메일 보내기</button>
+            <div class="col-sm-9">
+                <input type="text" th:field="*{email}" class="form-control" placeholder="이메일을 입력해주세요.">
+            </div>
+            <div class="col-sm-3">
+                <!--<button class="btn btn-custom-secondary e_2" type="button" onclick="mailSend()">인증</button> -->
             </div>
             <div class="col-sm-9 offset-sm-3">
-                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect data</p>
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">이메일을 입력해주세요.</p>
             </div>
         </div>
         <div class="form-group row">
             <label th:for="password" class="col-sm-3 col-form-label">비밀번호</label>
             <div class="col-sm-9">
-                <input type="password" th:field="*{password}" class="form-control form-control-custom" placeholder="비밀번호를 입력해주세요.">
-                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">Incorrect data</p>
+                <input type="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력해주세요.">
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">비밀번호를 입력해주세요.</p>
             </div>
         </div>
         <div class="form-group row">
             <label th:for="address" class="col-sm-3 col-form-label">주소</label>
             <div class="col-sm-9">
-                <input type="text" th:field="*{address}" class="form-control form-control-custom" placeholder="주소를 입력해주세요.">
-                <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect data</p>
+                <input type="text" th:field="*{address}" class="form-control" placeholder="주소를 입력해주세요.">
+                <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">주소를 입력해주세요.</p>
             </div>
         </div>
         <div class="form-group row">
             <label th:for="tel" class="col-sm-3 col-form-label">전화번호</label>
             <div class="col-sm-9">
-                <input type="text" th:field="*{tel}" class="form-control form-control-custom" placeholder="전화번호를 입력해주세요.">
-                <p th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}" class="fieldError">Incorrect data</p>
+                <input type="text" th:field="*{tel}" class="form-control" placeholder="전화번호를 입력해주세요.">
+                <p th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}" class="fieldError">전화번호를 입력해주세요.</p>
             </div>
         </div>
         <div class="form-group row justify-content-center">
