@@ -54,13 +54,12 @@
                 </td>
                 <td th:text="${item.itemSellStatus == T(com.shop.constant.ItemSellStatus).SELL} ? '판매중' : '품절'"></td>
                 <td th:text="${item.createdBy}"></td>
-                <td th:text="${item.regTime}"></td>
+                <td>
+                    <span th:text="${#temporals.format(item.regTime, 'yyyy-MM-dd HH:mm')}"></span>
+                </td>
             </tr>
             </tbody>
         </table>
-
-        <p th:text="${items.number}"></p>
-        <p th:text="${items.totalPages}"></p>
 
         <div th:with="start=${(items.number/maxPage)*maxPage +1},
         end=(${(items.totalPages == 0) ?

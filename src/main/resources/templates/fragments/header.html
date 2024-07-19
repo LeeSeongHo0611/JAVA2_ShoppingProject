@@ -2,41 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .navbar .nav-link {
-            color: #000000; /* 링크 색상 (검정색) */
-        }
-        .navbar .nav-link:hover {
-            color: #FFD400; /* 마우스 오버 색상 */
-        }
-        .navbar-brand {
-            margin: auto; /* 중앙 정렬 */
-        }
-        .nav-items-center {
-            display: flex;
-            justify-content: center; /* 중앙 정렬 */
-            flex-grow: 1; /* 공간을 차지하도록 */
-        }
-        .nav-item {
-            margin-left: 15px; /* 네비게이션 아이템 사이 여백 */
-        }
-    </style>
+    <link rel="stylesheet" href="css/layout1.css">
 </head>
 <body>
 <div th:fragment="header" class="text-center">
     <a class="navbar-brand" href="/">
         <img src="/img/PhoneHouse.png" alt="Shop Logo"> <!-- 로고 이미지 -->
     </a>
-    <nav class="navbar navbar-expand-lg" style="background-color: #f5f5dc;" > <!-- 커스텀 클래스를 추가 -->
+    <form class="d-flex me-2 justify-content-end" th:action="@{/}" method="get">
+        <div class="ml-auto">
+            <input name="searchQuery" class="form-control me-2 search-input" type="search"
+                   placeholder="검색어를 입력해주세요" aria-label="Search">
+        </div>
+        <button class="btn btn-outline-success my-2 my-sm-0 search-btn" type="submit">검색</button>
+    </form>
+    <nav class="custom-navbar navbar-expand-lg">
         <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarTogglerDemo03"
-                    aria-controls="navbarTogglerDemo03"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
             <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="nav-items-center navbar-nav mx-auto">
                     <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
@@ -55,11 +36,7 @@
                         <a class="nav-link" href="/boards/notice">공지사항</a>
                     </li>
                 </ul>
-                <form class="d-flex me-2" th:action="@{/}" method="get">
-                    <input name="searchQuery" class="form-control me-2" type="search"
-                           placeholder="검색어를 입력해주세요" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
-                </form>
+
                 <ul class="navbar-nav">
                     <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="nav-link" href="/members/login">로그인</a>
