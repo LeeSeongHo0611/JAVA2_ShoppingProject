@@ -2,82 +2,104 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
-<!-- 사용자 스크립트 추가 -->
-<th:block layout:fragment="script">
-    <script th:inline="javascript">
-        $(document).ready(function(){
-            $("#searchBtn").on("click",function(e){
-                e.preventDefault(); //검색버튼 클릭시 form 태그 전송을 막습니다.
-                page(0);
-            });
-        });
 
-        function page(page){
-            var searchDateType = $("#searchDateType").val();
-            var searchBy = $("#searchBy").val();
-            var searchQuery = $("#searchQuery").val();
-
-            location.href="/boards/notice/" + page + "?searchDateType=" + searchDateType
-            +"&searchBy=" + searchBy + "&searchQuery=" + searchQuery;
-
+<head>
+    <style>
+        /* 전체 테이블 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-    </script>
-</th:block>
+        /* 각 열 스타일 */
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+        }
 
-<!-- 사용자 CSS 추가 -->
-<th:block layout:fragment="css">
-    <style>
-        select{
-            margin-right : 10px
+        /* 각 열 너비 조정 */
+        th:nth-child(1), td:nth-child(1) { /* NO 열 */
+            width: 5%;
+        }
+
+        th:nth-child(2), td:nth-child(2) { /* 제목 열 */
+            width: 60%;
+            text-align: left; /* 제목 열의 텍스트 왼쪽 정렬 */
+        }
+
+        th:nth-child(3), td:nth-child(3) { /* 등록자 열 */
+            width: 15%;
+        }
+
+        th:nth-child(4), td:nth-child(4) { /* 등록일 열 */
+            width: 10%;
+        }
+
+        th:nth-child(5), td:nth-child(5) { /* 조회수 열 */
+            width: 5%;
+        }
+
+        /* 추가적인 스타일 */
+        select {
+            margin-right: 10px;
+        }
+
+        .form-control {
+            width: auto;
+        }
+
+        #searchBtn {
+            margin-left: 10px;
         }
     </style>
-</th:block>
+</head>
 
+<body>
 <div layout:fragment="content">
     <form th:action="@{'/boards/notice/'+${noticeBoards.number}}" role="form" method="get" th:object="${noticeBoards}">
         <div class="row row-cols-lg-auto g-3 align-items-center" th:object="${noticeBoardSearchDto}">
-            <select th:field="*{searchDateType}" class="form-control" style="width:auto;">
+            <select th:field="*{searchDateType}" class="form-control">
                 <option value="all">전체기간</option>
                 <option value="1d">1일</option>
                 <option value="1w">1주</option>
                 <option value="1m">1개월</option>
                 <option value="6m">6개월</option>
             </select>
-            <select th:field="*{searchBy}" class="form-control" style="width:auto;">
+            <select th:field="*{searchBy}" class="form-control">
                 <option value="title">제목</option>
                 <option value="createdBy">등록자</option>
             </select>
-            <input th:field="*{searchQuery}" type="text" class="form-control" style="width:auto; margin-right: 15px;" placeholder="검색어를 입력해주세요">
-            <button id="searchBtn" type="submit" class="form-control btn btn-primary" style="width:auto">검색</button>
+            <input th:field="*{searchQuery}" type="text" class="form-control" style="margin-right: 15px;" placeholder="검색어를 입력해주세요">
+            <button id="searchBtn" type="submit" class="form-control btn btn-primary">검색</button>
         </div>
         <table class="table">
             <thead>
             <tr>
-                <td>NO</td>
-                <td>제목</td>
-                <td>등록자</td>
-                <td>등록일</td>
-                <td>조회수</td>
+                <th>NO</th>
+                <th>제목</th>
+                <th>등록자</th>
+                <th>등록일</th>
+                <th>조회수</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="noticeBoard : ${noticeBoards.content}">
                 <td th:text="${noticeBoard.id}"></td>
-                <td>
+                <td style="text-align: left;">
                     <a th:href="'/boards/newBd/' + ${noticeBoard.id}" th:text="${noticeBoard.title}"></a>
                 </td>
                 <td th:text="${noticeBoard.createdBy}"></td>
                 <td>
-                    <span th:text="${#temporals.format(noticeBoard.regTime, 'yyyy-MM-dd HH:mm')}"></span>
+                    <span th:text="${#temporals.format(noticeBoard.regTime, 'yyyy-MM-dd')}"></span>
                 </td>
                 <td th:text="${noticeBoard.view}"></td>
             </tr>
             </tbody>
         </table>
         <div th:with="start=${(noticeBoards.number/maxPage)*maxPage +1},
-        end=(${(noticeBoards.totalPages == 0) ?
-        1 : (start + (maxPage-1) < noticeBoards.totalPages ? start + (maxPage - 1) : noticeBoards.totalPages)})">
+                    end=(${(noticeBoards.totalPages == 0) ?
+                    1 : (start + (maxPage-1) < noticeBoards.totalPages ? start + (maxPage - 1) : noticeBoards.totalPages)})">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${noticeBoards.first}?'disabled'">
                     <a th:onclick="'javascript:page('+${noticeBoards.number - 1} + ')'" aria-label='Previous'
@@ -103,4 +125,28 @@
         <button class="btn btn-primary" onclick="location.href='/boards/newBd'">글쓰기</button>
     </form>
 </div>
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            $("#searchBtn").on("click",function(e){
+                e.preventDefault(); //검색버튼 클릭시 form 태그 전송을 막습니다.
+                page(0);
+            });
+        });
+
+        function page(page){
+            var searchDateType = $("#searchDateType").val();
+            var searchBy = $("#searchBy").val();
+            var searchQuery = $("#searchQuery").val();
+
+            location.href="/boards/notice/" + page + "?searchDateType=" + searchDateType
+                +"&searchBy=" + searchBy + "&searchQuery=" + searchQuery;
+        }
+
+    </script>
+</th:block>
+
+</body>
 </html>
