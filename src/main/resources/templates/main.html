@@ -257,57 +257,66 @@
         let isDragging = false;
         const footer = document.getElementById('footer');
 
+
+        //슬라이더를 보여주는 함수
         function showSlide(index) {
             const slides = document.querySelector('.slides');
             const totalSlides = [[${#lists.size(mainImages)}]];
             if (index >= totalSlides) {
-                currentSlide = 0;
+                currentSlide = 0; // 마지막 슬라이드에서 첫슬라이드
             } else if (index < 0) {
-                currentSlide = totalSlides - 1;
+                currentSlide = totalSlides - 1; // 첫슬라이드에서 마지막 슬라이드
             } else {
-                currentSlide = index;
+                currentSlide = index; // 현재 슬라이드
             }
             slides.style.transform = 'translateX(' + (-currentSlide * 100) + '%)';
-            updateCounter();
+            updateCounter(); // 카운트 업데이트
         }
 
+        //슬라이드 이동
         function moveSlide(step) {
             showSlide(currentSlide + step);
         }
 
+        //슬라이드 카운트 업데이트
         function updateCounter() {
             const counter = document.getElementById('slideCounter');
             const totalSlides = [[${#lists.size(mainImages)}]];
             counter.textContent = `${currentSlide + 1} / ${totalSlides}`;
         }
 
+        // 터치 시작시 호출되는 함수
         function onTouchStart(event) {
             startX = event.touches[0].clientX;
             isDragging = true;
         }
 
+        // 터치 이동 시 호출되는 함수
         function onTouchMove(event) {
             if (!isDragging) return;
-            const currentX = event.touches[0].clientX;
-            const diffX = startX - currentX;
+            const currentX = event.touches[0].clientX; // 현재 터치 위치
+            const diffX = startX - currentX;            //터치 이동 거리 계산
             if (diffX > 50) {
-                moveSlide(1);
-                isDragging = false;
+                moveSlide(1);// 오른쪽으로 이동
+                isDragging = false;//드래그 종료
             } else if (diffX < -50) {
-                moveSlide(-1);
-                isDragging = false;
+                moveSlide(-1);// 왼쪽 이동
+                isDragging = false;// 드래그 종료
             }
         }
 
+        // 터치 종료시 호출되는 함수
         function onTouchEnd() {
             isDragging = false;
         }
 
+        // 마우스 다운시 호출
         function onMouseDown(event) {
             startX = event.clientX;
             isDragging = true;
         }
 
+        // 마우스 이동시 호출되는 함수
         function onMouseMove(event) {
             if (!isDragging) return;
             const currentX = event.clientX;
@@ -325,6 +334,7 @@
             isDragging = false;
         }
 
+        // DOMContentLoaded 이벤트 리스너
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.querySelector('.slider-container');
             slider.addEventListener('touchstart', onTouchStart);
@@ -336,11 +346,12 @@
             slider.addEventListener('mouseleave', onMouseUp); // 마우스가 슬라이더를 벗어났을 때 드래그 상태 해제
             showSlide(currentSlide);
 
-            // Add auto slide change
+            //  자동 슬라이더 변경
             setInterval(() => {
                 moveSlide(1);
             }, 3000); // Change slide every 3 seconds
 
+            // 무한 스크롤러
             const images = document.querySelectorAll('.slide img');
             images.forEach((img) => {
                 const imageUrl = img.src; // 각 이미지의 URL
@@ -358,6 +369,7 @@
             }
         });
 
+        // 평균값 계산후 이미지 후 남은 배경화면을 색칠하기 위해 사용
         function extractColor(imageUrl, callback) {
             const img = new Image();
             img.crossOrigin = 'Anonymous'; // CORS 허용
@@ -391,6 +403,7 @@
             };
         }
 
+        // 무한스크롤 함수
         function initializeInfiniteScroll(isSearch) {
             let page = 1;
             let isLoading = false;
@@ -403,6 +416,7 @@
                 isLoading = true;
                 console.log(`Loading items for page ${page}`);
 
+                // 분기에따른 쿼리 및 메인 엔드포인트 수행
                 const url = isSearch ? `/loadItems/search?page=${page}` : `/loadItems?page=${page}`;
 
                 $.ajax({
@@ -434,12 +448,15 @@
                         console.log(`Next page will be ${page}`);
                         isLoading = false;
 
+                        // 데이터 로드 확인
                         if (!data.last) {
                             const lastItem = $('#product-row .col:last')[0];
                             if (lastItem) {
+                                ///데이터가 마지막일 경우 마지막 아이템 관찰대상 설정
                                 observer.observe(lastItem);
                             }
                         } else {
+                            // 푸터 표시
                             observer.disconnect();
                             footer.style.display = 'block';
                         }
@@ -451,17 +468,25 @@
                 });
             }
 
+            // 초기 아이템 로드
             loadItems();
 
+            // 무한스크롤 기준 관찰 영역 설정 (50%)
             const observerOptions = {
+                //IntersectionObserver 옵션 요소 정의
+                // 관찰기준 요소
                 root: null,
+                // 관찰 대상 요소
                 threshold: 0.5
             };
 
+            // JavaScript의 네이티브 API ->  IntersectionObserver 객체 사용  - 배열인자(상품을 가저와) 교차발생(기준영역 50%)시 다음인자 호출
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
+                        // 교차한 요소에 대한 관찰을 중단합니다.
                         observer.unobserve(entry.target);
+                        // 교차한 요소에 대한 관찰을 중단합니다.
                         loadItems();
                     }
                 });
