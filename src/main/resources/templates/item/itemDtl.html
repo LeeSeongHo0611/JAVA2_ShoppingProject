@@ -2,156 +2,199 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
-
 <head>
-    <style>
-        /* 전체 테이블 스타일 */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        /* 각 열 스타일 */
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: center;
-            padding: 8px;
-        }
-
-        /* 각 열 너비 조정 */
-        th:nth-child(1), td:nth-child(1) { /* NO 열 */
-            width: 5%;
-        }
-
-        th:nth-child(2), td:nth-child(2) { /* 제목 열 */
-            width: 60%;
-            text-align: center; /* 제목 열의 텍스트 가운데 정렬 */
-        }
-
-        th:nth-child(3), td:nth-child(3) { /* 등록자 열 */
-            width: 15%;
-        }
-
-        th:nth-child(4), td:nth-child(4) { /* 등록일 열 */
-            width: 10%;
-        }
-
-        th:nth-child(5), td:nth-child(5) { /* 조회수 열 */
-            width: 5%;
-        }
-
-        /* 추가적인 스타일 */
-        select {
-            margin-right: 10px;
-        }
-
-        .form-control {
-            width: auto;
-        }
-
-        #searchBtn {
-            margin-left: 10px;
-        }
-
-        /* 제목의 내용을 왼쪽 정렬 */
-        .title-column {
-            text-align: left;
-        }
-    </style>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <!--**************결제 시스템 자바스크립트****************** -->
+    <!--포트원 SDK import-->
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <script src="/js/Kakao.js"></script>
+    <script src="/js/KGInigis.js"></script>
 </head>
 
-<body>
-<div layout:fragment="content">
-    <form th:action="@{'/boards/notice/'+${noticeBoards.number}}" role="form" method="get" th:object="${noticeBoards}">
-        <div class="row row-cols-lg-auto g-3 align-items-center" th:object="${noticeBoardSearchDto}">
-            <select th:field="*{searchDateType}" class="form-control">
-                <option value="all">전체기간</option>
-                <option value="1d">1일</option>
-                <option value="1w">1주</option>
-                <option value="1m">1개월</option>
-                <option value="6m">6개월</option>
-            </select>
-            <select th:field="*{searchBy}" class="form-control">
-                <option value="title">제목</option>
-                <option value="createdBy">등록자</option>
-            </select>
-            <input th:field="*{searchQuery}" type="text" class="form-control" style="margin-right: 15px;" placeholder="검색어를 입력해주세요">
-            <button id="searchBtn" type="submit" class="form-control btn btn-primary">검색</button>
-        </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>NO</th>
-                <th>제목</th>
-                <th>등록자</th>
-                <th>등록일</th>
-                <th>조회수</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="noticeBoard : ${noticeBoards.content}">
-                <td th:text="${noticeBoard.id}"></td>
-                <td class="title-column"> <!-- 제목 열, 내용 왼쪽 정렬 클래스 추가 -->
-                    <a th:href="'/boards/newBd/' + ${noticeBoard.id}" th:text="${noticeBoard.title}"></a>
-                </td>
-                <td th:text="${noticeBoard.createdBy}"></td>
-                <td>
-                    <span th:text="${#temporals.format(noticeBoard.regTime, 'yyyy-MM-dd')}"></span>
-                </td>
-                <td th:text="${noticeBoard.view}"></td>
-            </tr>
-            </tbody>
-        </table>
-        <div th:with="start=${(noticeBoards.number/maxPage)*maxPage +1},
-                    end=(${(noticeBoards.totalPages == 0) ?
-                    1 : (start + (maxPage-1) < noticeBoards.totalPages ? start + (maxPage - 1) : noticeBoards.totalPages)})">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${noticeBoards.first}?'disabled'">
-                    <a th:onclick="'javascript:page('+${noticeBoards.number - 1} + ')'" aria-label='Previous'
-                       class="page-link">
-                        <span aria-hidden="true">Previous</span>
-                    </a>
-                </li>
-                <li class="page-item" th:each="page: ${#numbers.sequence(start,end)}"
-                    th:classappend="${noticeBoards.number eq page-1}?'active':''">
-                    <a th:onclick="'javascript:page('+${page -1} + ')'" th:inline="text"
-                       class="page-link">[[${page}]]</a>
-                </li>
-                <li class="page-item" th:classappend="${noticeBoards.last}?'disabled'">
-                    <a th:onclick="'javascript:page(' + ${noticeBoards.number + 1} + ')'" aria-label="Next"
-                       class="page-link">
-                        <span aria-hidden="true">Next</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </form>
-    <form onsubmit="return false;">
-        <button class="btn btn-primary" onclick="location.href='/boards/newBd'">글쓰기</button>
-    </form>
-</div>
-
-<!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         $(document).ready(function(){
-            $("#searchBtn").on("click",function(e){
-                e.preventDefault(); //검색버튼 클릭시 form 태그 전송을 막습니다.
-                page(0);
-            });
+           calculateTotalPrice();
+
+           $("#count").change(function(){
+               calculateTotalPrice();
+           });
         });
 
-        function page(page){
-            var searchDateType = $("#searchDateType").val();
-            var searchBy = $("#searchBy").val();
-            var searchQuery = $("#searchQuery").val();
-
-            location.href="/boards/notice/" + page + "?searchDateType=" + searchDateType
-                +"&searchBy=" + searchBy + "&searchQuery=" + searchQuery;
+        function calculateTotalPrice(){
+           var count = $("#count").val();
+           var price = $("#price").val();
+           var totalPrice = price * count;
+           $("#totalPrice").html(totalPrice + '원');
         }
 
+        function order(){
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url = "/order";
+            var paramData = {
+                itemId : $("#itemId").val(),
+                count : $("#count").val()
+            }
+
+            var param = JSON.stringify(paramData);
+
+            $.ajax({
+                url : url,
+                type : "POST",
+                contentType : "application/json",
+                data : param,
+                beforeSend : function(xhr){
+                    /*데이터 전송하기 전에 헤더이 csrf 값을 설정*/
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType : "json",
+                cache : false,
+                success : function(result, status){
+                    alert("주문이 완료 되었습니다.");
+                    location.href='/';
+                },
+                error : function(jqXHR, status, error){
+                    if(jqXHR.status == '401'){
+                        alert('로그인 후 이용해주세요.');
+                        location.href='/members/login';
+                    }else{
+                        alert(jqXHR.responseText);
+                    }
+                }
+            });
+         }
+
+        function addCart(){
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url = "/cart";
+
+            var paramData = {
+                itemId : $("#itemId").val(),
+                count : $("#count").val()
+            };
+            var param = JSON.stringify(paramData);
+
+            $.ajax({
+                url : url,
+                type : "POST",
+                contentType : "application/json",
+                data : param,
+                beforeSend : function(xhr){
+                    /*데이터 전송하기 전에 헤더이 csrf 값을 설정*/
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType : "json",
+                cache : false,
+                success : function(result, status){
+                    alert("상품을 장바구니에 담았습니다.");
+                    location.href='/';
+                },
+                error : function(jqXHR, status, error){
+                    if(jqXHR.status == '401'){
+                        alert('로그인 후 이용해주세요.');
+                        location.href='/members/login';
+                    }else{
+                        alert(jqXHR.responseText);
+                    }
+                }
+            });
+         }
+
+
     </script>
+
+</th:block>
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        .mgb-15{
+            margin-bottom:15px;
+        }
+        .mgt-30{
+            margin-top:30px;
+        }
+        .mgt-50{
+            margin-top:50px;
+        }
+        .repImgDiv{
+            margin-right:15px;
+            height:auto;
+            width:50%;
+        }
+        .repImg{
+            width:100%;
+            height:400px;
+        }
+        .wd50{
+            height:auto;
+            width:50%;
+        }
+    </style>
 </th:block>
 
-</body>
+<div layout:fragment="content" style="margin-left:25%;margin-right:25%">
+    <input type="hidden" id="itemId" th:value="${item.id}">
+
+    <div class="d-flex">
+        <div class="repImgDiv">
+            <img th:src="${item.itemImgDtoList[0].imgUrl}" class="rounded repImg" th:alt="${item.itemNm}">
+        </div>
+        <div class="wd50">
+            <span th:if="${item.itemSellStatus == T(com.shop.constant.ItemSellStatus).SELL}"
+                  class="badge bg-primary mgb-15">판매중</span>
+            <span th:unless="${item.itemSellStatus == T(com.shop.constant.ItemSellStatus).SELL}"
+                  class="badge bg-primary mgb-15">품절</span>
+            <div class="h4" th:text="${item.itemNm}"></div>
+            <hr class="my-4">
+            <div class="text-right">
+                <div class="h4 text-danger text-left">
+                    <input type="hidden" th:value="${item.price}" id="price" name="price">
+                    <span th:text="${item.price}"></span>원
+                </div>
+                <div class="input-group w-50">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">수량</span>
+                    </div>
+                    <input type="number" name="count" id="count" class="form-control" value="1" min="1">
+                </div>
+            </div>
+            <hr class="my-4">
+
+            <div class="text-right mgt-50">
+                <h5>결제 금액</h5>
+                <h3 name="totalPrice" id="totalPrice" class="font-weight-bold"></h3>
+            </div>
+            <div th:if="${item.itemSellStatus == T(com.shop.constant.ItemSellStatus).SELL}"
+                 class="text-right">
+                <button type="button" class="btn btn-light border border-primary btn-lg"
+                        onclick="addCart()">
+                    장바구니 담기</button>
+                <!--<button type="button" class="btn btn-primary btn-lg" onclick="order()">주문하기</button>-->
+                <button type="button" class="btn btn-primary btn-lg" id="KGInigis">주문하기</button>
+            </div>
+            <div th:unless="${item.itemSellStatus == T(com.shop.constant.ItemSellStatus).SELL}"
+                 class="text-right">
+                <button type="button" class="btn btn-danger btn-lg">품절</button>
+            </div>
+        </div>
+    </div>
+    <div class="mgt-30">
+        <div class="container">
+            <h4 class="border border-success-subtle rounded-pill display-5">상품 상세 설명</h4>
+            <hr class="my-4">
+            <p class="lead" th:text="${item.itemDetail}"></p>
+        </div>
+    </div>
+    <div th:each="itemImg : ${item.itemImgDtoList}" class="text-center">
+        <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}"
+             class="rounded mgb-15"
+             width="800">
+    </div>
+</div>
+
 </html>
