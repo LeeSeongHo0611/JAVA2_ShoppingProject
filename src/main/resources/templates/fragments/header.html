@@ -6,13 +6,42 @@
 </head>
 <body>
 <div th:fragment="header" class="text-center">
+    <!-- JavaScript for expanding search box -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var searchIcon = document.querySelector('.search-icon');
+            var searchBox = document.querySelector('.search-input');
+
+            searchIcon.addEventListener('click', function() {
+                searchBox.classList.toggle('active');
+                if (searchBox.classList.contains('active')) {
+                    searchBox.setAttribute('placeholder', '검색어를 입력해주세요');
+                } else {
+                    searchBox.setAttribute('placeholder', '');
+                }
+            });
+        });
+    </script>
+    <style>
+        .search-input {
+        width: 0;
+    opacity: 0;
+    transition: width 0.4s, opacity 0.4s;
+    }
+
+    .search-input.active {
+        width: 300px;
+        opacity: 1;
+    }
+    </style>
     <a class="navbar-brand" href="/">
         <img src="/img/PhoneHouse.png" alt="Shop Logo"> <!-- 로고 이미지 -->
     </a>
     <form class="d-flex me-2 justify-content-end" th:action="@{/}" method="get">
-        <div class="ml-auto">
+        <div class="ml-auto d-flex align-items-center">
             <input name="searchQuery" class="form-control me-2 search-input" type="search"
                    placeholder="검색어를 입력해주세요" aria-label="Search">
+            <img alt="통합검색" src="//image.istarbucks.co.kr/common/img/common/icon_magnifier_black.png" class="search-icon" style="cursor:pointer; width: 24px; height: 24px;">
         </div>
         <button class="btn btn-outline-success my-2 my-sm-0 search-btn" type="submit">검색</button>
     </form>
@@ -32,7 +61,7 @@
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <a class="nav-link" href="/orders">구매이력</a>
                     </li>
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link" href="/boards/notice">공지사항</a>
                     </li>
                 </ul>
