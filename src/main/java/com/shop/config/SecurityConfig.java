@@ -31,6 +31,8 @@ public class SecurityConfig {
                         .requestMatchers("/","/members/**","/item/**","/images/**","/noticeBoard/**").permitAll()
                         .requestMatchers("/loadItems").permitAll()
                         .requestMatchers("/search").permitAll()
+                        .requestMatchers("/boards/notice/**").permitAll()
+                        .requestMatchers("/boards/newBd/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
 
@@ -55,7 +57,12 @@ public class SecurityConfig {
                                 // 베스트 item 테스트를 하기 위한 html 오픈
                                 "item/**",
                                 // 베스트 item img 테스트를 하기 위한 html 오픈
-                                "img/**")
+                                "img/**",
+                                // 모든 사람이 볼수 있게 공지사항 오픈
+                                "/boards/notice/**",
+                                "/boards/newBd/**"
+
+                                )
                 )
                 .oauth2Login(oauthLogin -> oauthLogin
                         .defaultSuccessUrl("/")

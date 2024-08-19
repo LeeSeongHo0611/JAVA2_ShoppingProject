@@ -6,7 +6,7 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         $(document).ready(function(){
-            $("searchBtn").on("click",function(e){
+            $("#searchBtn").on("click",function(e){
                 e.preventDefault(); //검색버튼 클릭시 form 태그 전송을 막습니다.
                 page(0);
             });
@@ -28,22 +28,76 @@
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
     <style>
-        select{
-            margin-right : 10px
+        /* 전체 테이블 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse; /* 셀 경계를 병합하여 보여줍니다 */
+            border: 1px solid #dee2e6; /* 전체 테이블 테두리 스타일 */
+            border-radius: 5px; /* 테이블 테두리 둥글게 */
         }
+
+        /* 테이블 헤더 셀 스타일 */
+        th {
+            text-align: center; /* 헤더 텍스트 가운데 정렬 */
+            padding: 10px; /* 셀 안 여백 설정 */
+            background-color: #f8f9fa; /* 배경색 회색 계열 */
+            border-bottom: 2px solid #dee2e6; /* 헤더 셀 하단 경계선 스타일 */
+        }
+
+        /* 테이블 데이터 셀 스타일 */
+        td {
+            text-align: center; /* 데이터 텍스트 가운데 정렬 */
+            padding: 10px; /* 셀 안 여백 설정 */
+            border-bottom: 1px solid #dee2e6; /* 데이터 셀 하단 경계선 스타일 */
+        }
+
+        /* 검색 버튼 스타일 */
+        #searchBtn {
+            margin-left: 10px; /* 왼쪽 여백 설정 */
+            background-color: #343a40; /* 검은색 계열 배경색 */
+            border-color: #343a40; /* 검은색 계열 테두리 색 */
+            color: #fff; /* 글자색 흰색으로 설정 */
+        }
+
+        #searchBtn:hover {
+            background-color: #868e96; /* 조금 더 진한 회색 배경색 */
+            border-color: #868e96; /* 조금 더 진한 회색 테두리 색 */
+        }
+
     </style>
+
 </th:block>
 
 <div layout:fragment="content">
     <form th:action="@{'/admin/items/'+${items.number}}" role="form" method="get" th:object="${items}">
+        <div class="row row-cols-lg-auto g-3 align-items-center" th:object="${itemSearchDto}">
+            <select th:field="*{searchDateType}" class="form-control" style="width:auto;">
+                <option value="all">전체기간</option>
+                <option value="1d">1일</option>
+                <option value="1w">1주</option>
+                <option value="1m">1개월</option>
+                <option value="6m">6개월</option>
+            </select>
+            <select th:field="*{searchSellStatus}" class="form-control" style="width:auto;">
+                <option value="">판매상태(전체)</option>
+                <option value="SELL">판매</option>
+                <option value="SOLD_OUT">품절</option>
+            </select>
+            <select th:field="*{searchBy}" class="form-control" style="width:auto;">
+                <option value="itemNm">상품명</option>
+                <option value="createdBy">등록자</option>
+            </select>
+            <input th:field="*{searchQuery}" type="text" class="form-control" style="width:auto; margin-right: 15px;" placeholder="검색어를 입력해주세요">
+            <button id="searchBtn" type="submit" class="form-control btn btn-primary" style="width:auto">검색</button>
+        </div>
         <table class="table">
             <thead>
             <tr>
-                <td>상품아이디</td>
-                <td>상품명</td>
-                <td>상태</td>
-                <td>등록자</td>
-                <td>등록일</td>
+                <th style="width: 5%;">상품아이디</th>
+                <th style="width: 50%;">상품명</th>
+                <th style="width: 10%;">상태</th>
+                <th style="width: 15%;">등록자</th>
+                <th style="width: 20%;">등록일</th>
             </tr>
             </thead>
             <tbody>
@@ -54,13 +108,12 @@
                 </td>
                 <td th:text="${item.itemSellStatus == T(com.shop.constant.ItemSellStatus).SELL} ? '판매중' : '품절'"></td>
                 <td th:text="${item.createdBy}"></td>
-                <td th:text="${item.regTime}"></td>
+                <td>
+                    <span th:text="${#temporals.format(item.regTime, 'yyyy-MM-dd HH:mm')}"></span>
+                </td>
             </tr>
             </tbody>
         </table>
-
-        <p th:text="${items.number}"></p>
-        <p th:text="${items.totalPages}"></p>
 
         <div th:with="start=${(items.number/maxPage)*maxPage +1},
         end=(${(items.totalPages == 0) ?
@@ -84,27 +137,6 @@
                     </a>
                 </li>
             </ul>
-        </div>
-
-        <div class="row row-cols-lg-auto g-3 align-items-center" th:object="${itemSearchDto}">
-            <select th:field="*{searchDateType}" class="form-control" style="width:auto;">
-                <option value="all">전체기간</option>
-                <option value="1d">1일</option>
-                <option value="1w">1주</option>
-                <option value="1m">1개월</option>
-                <option value="6m">6개월</option>
-            </select>
-            <select th:field="*{searchSellStatus}" class="form-control" style="width:auto;">
-                <option value="">판매상태(전체)</option>
-                <option value="SELL">판매</option>
-                <option value="SOLD_OUT">품절</option>
-            </select>
-            <select th:field="*{searchBy}" class="form-control" style="width:auto;">
-                <option value="itemNm">상품명</option>
-                <option value="createdBy">등록자</option>
-            </select>
-            <input th:field="*{searchQuery}" type="text" class="form-control" style="width:auto; margin-right: 15px;" placeholder="검색어를 입력해주세요">
-            <button id="searchBtn" type="submit" class="form-control btn btn-primary" style="width:auto">검색</button>
         </div>
     </form>
 </div>

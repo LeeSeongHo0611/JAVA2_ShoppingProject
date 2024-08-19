@@ -5,6 +5,8 @@ html{
 }
 body{
     min-height: 100%;
+    padding: 50px;
+
 }
 .footer {
     position: absolute; /* 고정 위치 설정 */
@@ -25,5 +27,69 @@ body{
     margin-top: 50px;
     margin-left: 150px;
     margin-right: 150px;
-    padding-bottom: 60px;
+    padding-bottom: 100px;
+}
+
+.custom-navbar {
+    position: relative; /* 상단에 고정 */
+    top: 0; /* 뷰포트 상단에 위치 */
+    background-color: rgba(91, 88, 89, 1); /* #5B5859 색상 */
+    backdrop-filter: blur(8px); /* 배경 흐림 효과 */
+    z-index: 999; /* 다른 요소 위에 표시 */
+    height: 60px; /* 높이 설정 */
+    width: 100%; /* 전체 너비 */
+    display: flex; /* Flexbox 사용 */
+    align-items: center; /* 수직 중앙 정렬 */
+    padding: 0 1rem; /* 좌우 패딩 추가 */
+}
+
+.nav-items-center {
+    display: flex; /* Flexbox 사용 */
+    justify-content: center; /* 중앙 정렬 */
+    flex-grow: 1; /* 공간을 차지하도록 */
+}
+
+.nav-item {
+    margin: 0 15px; /* 좌우 여백 추가 */
+}
+
+.nav-link {
+    color: #fff; /* 링크 색상 (검정색) */
+    text-decoration: none; /* 링크 밑줄 제거 */
+    font-weight: bold; /* 글씨 두껍게 */
+    transition: color 0.3s; /* 색상 전환 효과 */
+    padding: 10px 15px; /* 클릭 영역 확대를 위한 패딩 추가 */
+    border-radius: 5px; /* 모서리 둥글게 */
+}
+
+.nav-link:hover {
+    color: #FFD400; /* 마우스 오버 색상 */
+    background-color: rgba(255, 255, 255, 0.2); /* 마우스 오버 시 배경색 추가 */
+}
+
+.navbar-brand {
+    margin-right: auto; /* 로고를 왼쪽으로 정렬 */
+    font-size: 1.5rem; /* 로고 크기 설정 */
+}
+
+@media (max-width: 768px) {
+    .nav-items-center {
+        flex-direction: column; /* 작은 화면에서는 세로 정렬 */
+        align-items: center; /* 중앙 정렬 */
+    }
+
+    .nav-item {
+        margin: 10px 0; /* 모바일에서는 세로 여백 추가 */
+    }
+}
+/*버튼*/
+.search-input {
+    width: 250px; /* 입력 필드의 너비 조정 */
+    margin-bottom: 10px; /* 아래쪽 마진 설정 */
+}
+
+.search-btn {
+    margin-left: 10px; /* 왼쪽 마진 설정 */
+    margin-bottom: 10px; /* 아래쪽 마진 설정 */
+
 }

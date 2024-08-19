@@ -64,8 +64,7 @@
             border: none; /* 상품 테두리 제거 */
             /*7월19일 오전10시 상품 효과 추가, 테두리효과 제거*/
             background-color: white; /* 배경색 설정 */
-
-            margin: 20px; /* 모든 방향에 20px 간격 */
+            margin: 30px; /* 상품 상하좌우 간격 30px */
             overflow: hidden; /* 넘치는 콘텐츠를 숨김 */
             transition: transform 0.2s; /* 트랜스폼 효과 애니메이션 설정 */
         }
@@ -109,10 +108,150 @@
             object-fit: cover; /* 이미지를 컨테이너 크기에 맞게 조정하면서 비율을 유지 */
         }
 
+                /* 추가된 스타일 */
+        .best-seller-container {
+            background-color: #ffffff; /* 배경 컨테이너 색깔 설정 */
+            padding: 20px; /* 내부 여백 설정 */
+            margin-bottom: 30px; /* 아래쪽 여백 설정 */
+            border-radius: 10px; /* 모서리 둥글게 설정 */
+        }
+
+        .best-seller-black{
+            text-align: left; /*왼쪽 정렬*/
+            font-size: 2em; /* 글꼴 크기 설정 */
+            font-weight: bold; /* 글꼴 두께 설정 */
+
+            margin-bottom: 20px; /* 아래쪽 여백 설정 */
+        }
+        .best-seller-header {
+            text-align: left; /*왼쪽 정렬*/
+            font-size: 2em; /* 글꼴 크기 설정 */
+            font-weight: bold; /* 글꼴 두께 설정 */
+            color: #d9534f; /* 글꼴 색상 설정 */
+            margin-bottom: 20px; /* 아래쪽 여백 설정 */
+        }
+
+        /* 베스트 상품 카드 스타일 */
+        .best-seller-card {
+
+            padding: 10px; /* 카드 내부 여백 설정 */
+            margin: 20px; /* 카드 외부 여백 설정 */
+            background-color: #f9f9f9; /* 카드 배경색 설정 */
+            border-radius: 15px; /* 카드 모서리를 둥글게 설정 */
+            transition: transform 0.3s, box-shadow 0.3s; /* 트랜스폼 및 그림자 효과에 대한 애니메이션 설정 */
+        }
+
+        .best-seller-card:hover {
+            transform: scale(1.05); /* 마우스를 올렸을 때 카드 크기를 1.05배로 확대 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 마우스를 올렸을 때 카드에 그림자 효과 추가 */
+        }
+
+        .best-seller-img {
+            width: 100%; /* 이미지 너비를 100%로 설정 */
+            height: auto; /* 이미지 높이를 자동으로 설정 */
+            object-fit: cover; /* 이미지 비율을 유지하면서 컨테이너에 맞게 조정 */
+            border-radius: 10px; /* 이미지 모서리를 둥글게 설정 */
+        }
+
+        .best-seller-details {
+            text-align: center; /* 텍스트를 가운데 정렬 */
+            margin-top: 15px; /* 컨테이너 상단 여백 설정 */
+        }
+
+        .best-seller-title {
+            font-size: 1.2em; /* 글꼴 크기 설정 */
+            font-weight: bold; /* 글꼴 두께 설정 */
+            color: #333; /* 글꼴 색상 설정 */
+        }
+
+        .best-seller-stock {
+            font-size: 1em; /* 글꼴 크기 설정 */
+            color: #777; /* 글꼴 색상 설정 */
+        }
+
+        .best-seller-price {
+            font-size: 1.4em; /* 글꼴 크기 설정 */
+            font-weight: bold; /* 글꼴 두께 설정 */
+            color: #d9534f; /* 글꼴 색상 설정 */
+        }
+
+        .product-container {
+            display: flex; /* 플렉스 박스를 사용하여 요소를 정렬 */
+            flex-wrap: wrap; /* 요소가 넘칠 경우 다음 줄로 넘기기 */
+            justify-content: center; /* 요소들을 가운데 정렬 */
+            padding: 20px; /* 컨테이너 내부 여백 설정 */
+        }
+
+                /* 팝업 */
+        /* 모달 창을 나타내는 스타일 */
+        .modal {
+            display: none; /* 기본적으로 숨겨진 상태 */
+            position: fixed; /* 화면에 고정 */
+            z-index: 1000; /* 다른 요소들보다 위에 표시 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* 배경에 투명한 검은색 레이어 추가 */
+            overflow: auto; /* 모달 창 내용이 넘칠 경우 스크롤바 제공 */
+        }
+
+        /* 모달 창의 콘텐츠 영역 스타일 */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 20% auto; /* 모달 창을 화면 중앙에 위치 */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* 모달 창의 너비 */
+            max-width: 600px; /* 최대 너비 제한 */
+            text-align: center; /* 텍스트 가운데 정렬 */
+            position: relative; /* 상대 위치 설정 */
+
+        }
+
+        /* 닫기 버튼 스타일 */
+        .close {
+            color: #aaa;
+            float: right; /* 오른쪽으로 띄우기 */
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute; /* 절대 위치 설정 */
+            top: 10px; /* 위에서 10px 띄우기 */
+            right: 10px; /* 오른쪽에서 10px 띄우기 */
+            cursor: pointer;
+        }
+
+        /*본문 팝업*/
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        /* 이미지 스타일 */
+        .modal-content img {
+            max-width: 100%; /* 이미지가 모달 창 안에서 최대 너비로 표시되도록 설정 */
+            height: auto; /* 비율을 유지하면서 이미지 높이 조정 */
+        }
+        .dontShowAgain {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            padding: 5px 10px;
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            font-size: 14px;
+            outline: none; /* 클릭 시 파란 테두리 제거 */
+        }
+
+
     </style>
 </head>
 <body>
 <div layout:fragment="content">
+    <!--베너 html-->
     <div class="slider-container">
         <div class="slides">
             <th:block th:each="image : ${mainImages}">
@@ -126,12 +265,46 @@
         <div class="counter" id="slideCounter">1 / [[${#lists.size(mainImages)}]]</div>
     </div>
 
+    <!-- 팝업 본문-->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img src="https://img.mnprice.com/data/upload/fold6_533x300.jpg" alt="갤럭시 Z플립6 사전예약">
+            <button class="dontShowAgain" onclick="dontShowAgain()">오늘 다시 보지 않기</button>
+        </div>
+    </div>
+
+
     <input type="hidden" name="searchQuery" th:value="${itemSearchDto.searchQuery}">
     <div th:if="${not #strings.isEmpty(itemSearchDto.searchQuery)}" class="center">
         <p class="h3 font-weight-bold" th:text="${itemSearchDto.searchQuery} + ' 검색결과'"></p>
     </div>
 
     <div class="container text-center" id="product-container">
+        <!-- 베스트 상품 섹션   베스트셀러 클래스로 변경-->
+        <div class="best-seller-container"> <!-- 베스트 상품 배경 컨테이너 추가 -->
+
+            <h2 class="best-seller-header">베스트 상품</h2> <!-- 베스트 상품 제목 추가 -->
+            <div class="row row-cols-5" id="best-product-row">
+                <th:block th:each="item : ${itemBest}">
+                    <div class="col">
+                        <div class="best-seller-card">
+                            <a th:href="'/item/' + ${item.id}" class="text-dark">
+                                <img th:src="${item.images[0].imgUrl}" class="best-seller-img" th:alt="${item.itemNm}" height="400">
+                                <div class="best-seller-details">
+                                    <h4 class="best-seller-title" th:text="${item.itemNm}"></h4>
+                                    <p class="best-seller-stock" th:text="${item.stockNumber + '개'}"></p>
+                                    <h3 class="best-seller-price" th:text="${item.price + '원'}"></h3>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+        </br>
+        <!-- 일반 상품 섹션 -->
+        <h2 class="best-seller-black">전체 상품</h2><!--전체 상품 제목 추가-->
         <div class="row row-cols-5" id="product-row">
             <th:block th:each="item : ${items}">
                 <div class="col">
@@ -160,57 +333,66 @@
         let isDragging = false;
         const footer = document.getElementById('footer');
 
+
+        //슬라이더를 보여주는 함수
         function showSlide(index) {
             const slides = document.querySelector('.slides');
             const totalSlides = [[${#lists.size(mainImages)}]];
             if (index >= totalSlides) {
-                currentSlide = 0;
+                currentSlide = 0; // 마지막 슬라이드에서 첫슬라이드
             } else if (index < 0) {
-                currentSlide = totalSlides - 1;
+                currentSlide = totalSlides - 1; // 첫슬라이드에서 마지막 슬라이드
             } else {
-                currentSlide = index;
+                currentSlide = index; // 현재 슬라이드
             }
             slides.style.transform = 'translateX(' + (-currentSlide * 100) + '%)';
-            updateCounter();
+            updateCounter(); // 카운트 업데이트
         }
 
+        //슬라이드 이동
         function moveSlide(step) {
             showSlide(currentSlide + step);
         }
 
+        //슬라이드 카운트 업데이트
         function updateCounter() {
             const counter = document.getElementById('slideCounter');
             const totalSlides = [[${#lists.size(mainImages)}]];
             counter.textContent = `${currentSlide + 1} / ${totalSlides}`;
         }
 
+        // 터치 시작시 호출되는 함수
         function onTouchStart(event) {
             startX = event.touches[0].clientX;
             isDragging = true;
         }
 
+        // 터치 이동 시 호출되는 함수
         function onTouchMove(event) {
             if (!isDragging) return;
-            const currentX = event.touches[0].clientX;
-            const diffX = startX - currentX;
+            const currentX = event.touches[0].clientX; // 현재 터치 위치
+            const diffX = startX - currentX;            //터치 이동 거리 계산
             if (diffX > 50) {
-                moveSlide(1);
-                isDragging = false;
+                moveSlide(1);// 오른쪽으로 이동
+                isDragging = false;//드래그 종료
             } else if (diffX < -50) {
-                moveSlide(-1);
-                isDragging = false;
+                moveSlide(-1);// 왼쪽 이동
+                isDragging = false;// 드래그 종료
             }
         }
 
+        // 터치 종료시 호출되는 함수
         function onTouchEnd() {
             isDragging = false;
         }
 
+        // 마우스 다운시 호출
         function onMouseDown(event) {
             startX = event.clientX;
             isDragging = true;
         }
 
+        // 마우스 이동시 호출되는 함수
         function onMouseMove(event) {
             if (!isDragging) return;
             const currentX = event.clientX;
@@ -228,6 +410,7 @@
             isDragging = false;
         }
 
+        // DOMContentLoaded 이벤트 리스너
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.querySelector('.slider-container');
             slider.addEventListener('touchstart', onTouchStart);
@@ -239,11 +422,12 @@
             slider.addEventListener('mouseleave', onMouseUp); // 마우스가 슬라이더를 벗어났을 때 드래그 상태 해제
             showSlide(currentSlide);
 
-            // Add auto slide change
+            //  자동 슬라이더 변경
             setInterval(() => {
                 moveSlide(1);
             }, 3000); // Change slide every 3 seconds
 
+            // 무한 스크롤러
             const images = document.querySelectorAll('.slide img');
             images.forEach((img) => {
                 const imageUrl = img.src; // 각 이미지의 URL
@@ -261,6 +445,7 @@
             }
         });
 
+        // 평균값 계산후 이미지 후 남은 배경화면을 색칠하기 위해 사용
         function extractColor(imageUrl, callback) {
             const img = new Image();
             img.crossOrigin = 'Anonymous'; // CORS 허용
@@ -294,6 +479,7 @@
             };
         }
 
+        // 무한스크롤 함수
         function initializeInfiniteScroll(isSearch) {
             let page = 1;
             let isLoading = false;
@@ -306,6 +492,7 @@
                 isLoading = true;
                 console.log(`Loading items for page ${page}`);
 
+                // 분기에따른 쿼리 및 메인 엔드포인트 수행
                 const url = isSearch ? `/loadItems/search?page=${page}` : `/loadItems?page=${page}`;
 
                 $.ajax({
@@ -337,12 +524,15 @@
                         console.log(`Next page will be ${page}`);
                         isLoading = false;
 
+                        // 데이터 로드 확인
                         if (!data.last) {
                             const lastItem = $('#product-row .col:last')[0];
                             if (lastItem) {
+                                ///데이터가 마지막일 경우 마지막 아이템 관찰대상 설정
                                 observer.observe(lastItem);
                             }
                         } else {
+                            // 푸터 표시
                             observer.disconnect();
                             footer.style.display = 'block';
                         }
@@ -354,22 +544,73 @@
                 });
             }
 
+            // 초기 아이템 로드
             loadItems();
 
+            // 무한스크롤 기준 관찰 영역 설정 (50%)
             const observerOptions = {
+                //IntersectionObserver 옵션 요소 정의
+                // 관찰기준 요소
                 root: null,
+                // 관찰 대상 요소
                 threshold: 0.5
             };
 
+            // JavaScript의 네이티브 API ->  IntersectionObserver 객체 사용  - 배열인자(상품을 가저와) 교차발생(기준영역 50%)시 다음인자 호출
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
+                        // 교차한 요소에 대한 관찰을 중단합니다.
                         observer.unobserve(entry.target);
+                        // 아이템 로드
                         loadItems();
                     }
                 });
             }, observerOptions);
         }
+
+
+         //팝업 추가
+        // 페이지 로드 시 자동으로 팝업 열기
+        document.addEventListener("DOMContentLoaded", function() {
+            var modal = document.getElementById('myModal');
+            // 쿠키가 설정되어 있지 않으면 모달 창 보이기
+            if (getCookie('dontShowPopup') !== 'true') {
+                modal.style.display = "block";
+            }
+        });
+
+        // 모달 닫기 함수
+        function closeModal() {
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
+        }
+        // 모달 창 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            var modal = document.getElementById('myModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // "오늘 다시 보지 않기" 버튼 클릭 시 동작
+        function dontShowAgain() {
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
+
+            // 쿠키 설정 (1일 동안 유지되는 쿠키)
+            var expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 1); // 현재 날짜에 1을 더한 날짜
+            document.cookie = "dontShowPopup=true; expires=" + expiryDate.toUTCString() + "; path=/";
+        }
+
+        // 쿠키 가져오기 함수
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+
     </script>
 </th:block>
 </body>

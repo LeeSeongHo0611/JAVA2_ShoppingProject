@@ -7,17 +7,15 @@
     <title>회원가입</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
 
         .container {
-            margin-top: 50px;
+            margin-top: 250px;
             padding: 20px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 480px;
+            margin-bottom: 300px;
         }
 
         .centered-title {
@@ -104,11 +102,11 @@
         </div>
         <div class="form-group row">
             <label th:for="email" class="col-sm-3 col-form-label">이메일 주소</label>
-            <div class="col-sm-6">
+            <div class="col-sm-9">
                 <input type="text" th:field="*{email}" class="form-control" placeholder="이메일을 입력해주세요.">
             </div>
             <div class="col-sm-3">
-                <button class="btn btn-custom-secondary e_2" type="button" onclick="mailSend()">인증</button>
+                <!--<button class="btn btn-custom-secondary e_2" type="button" onclick="mailSend()">인증</button> -->
             </div>
             <div class="col-sm-9 offset-sm-3">
                 <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">이메일을 입력해주세요.</p>
