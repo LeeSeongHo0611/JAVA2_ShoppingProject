@@ -294,7 +294,17 @@
                                 <div class="best-seller-details">
                                     <h4 class="best-seller-title" th:text="${item.itemNm}"></h4>
                                     <p class="best-seller-stock" th:text="${item.stockNumber + '개'}"></p>
-                                    <h3 class="best-seller-price" th:text="${item.price + '원'}"></h3>
+                                    <!-- 할인율 표시 (있을 경우) 8월19일-->
+                                    <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate.setScale(2)} + '%'"></p>
+
+                                    <!-- 원래 가격 취소선 표시 8월19일-->
+                                    <p class="original-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price + '원'}" style="text-decoration: line-through; color: grey;"></p>
+
+                                    <!-- 할인된 가격 표시 8월19일-->
+                                    <h3 class="best-seller-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price.subtract(item.price.multiply(item.discountrate)) + '원'}"></h3>
+
+                                    <!-- 할인율이 없을 때는 원래 가격만 표시 8월19일-->
+                                    <h3 class="best-seller-price" th:if="${item.discountrate == null || item.discountrate == 0}" th:text="${item.price + '원'}"></h3>
                                 </div>
                             </a>
                         </div>

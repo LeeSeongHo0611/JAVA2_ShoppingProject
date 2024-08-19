@@ -169,6 +169,15 @@
         </div>
         <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="fieldError">Incorrect data</p>
 
+        <!-- 할인율 입력 박스 추가  8월19일-->
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">할인율 (%)</span>
+            </div>
+            <input type="number" th:field="*{discountrate}" class="form-control" placeholder="할인율을 입력해주세요.">
+        </div>
+        <p th:if="${#fields.hasErrors('discountrate')}" th:errors="*{discountrate}" class="fieldError">Incorrect data</p>
+
         <!--7월11일 오후5시45분 판매상태여부 이동-->
         <div class="input-group">
             <div class="input-group-prepend">

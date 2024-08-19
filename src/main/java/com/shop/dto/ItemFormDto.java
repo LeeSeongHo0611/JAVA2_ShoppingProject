@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,9 @@ public class ItemFormDto {
     private String itemNm;
 
     @NotNull(message = "가격은 필수 입력 값입니다.")
-    private Integer price;
+    private BigDecimal price;
+
+    private BigDecimal discountrate; // 8월19일 수정
 
     @NotBlank(message = "이름은 필수 입력 값입니다.")
     private  String itemDetail;

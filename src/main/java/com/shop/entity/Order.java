@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,10 +61,10 @@ public class Order extends BaseEntity{
     }
     // 주문서에 있는 주문 아이템 리스트를 반복
     // 주문 아이템마다 총 가격을 tatalPrice에 추가
-    public int getTotalPrice(){
-        int totalPrice = 0;
-        for(OrderItem orderItem : orderItems){
-            totalPrice += orderItem.getTotalPrice();
+    public BigDecimal getTotalPrice() { // 8월19일 변경
+        BigDecimal totalPrice = BigDecimal.ZERO; // BigDecimal 초기화
+        for(OrderItem orderItem : orderItems) {
+            totalPrice = totalPrice.add(orderItem.getTotalPrice());
         }
         return totalPrice;
     }

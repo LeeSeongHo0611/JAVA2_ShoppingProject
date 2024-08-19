@@ -4,6 +4,7 @@ import com.shop.dto.ItemFormDto;
 import com.shop.dto.ItemSearchDto;
 import com.shop.entity.Item;
 import com.shop.entity.ItemImg;
+import com.shop.service.DiscountService;
 import com.shop.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +32,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+
+    private final DiscountService discountService; // 8월19일 추가
+
+    public ItemController(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
+    @GetMapping("/item/{id}")
+    public String getItem(@PathVariable("id") Long id, Model model) {
+        Item item = itemService.getItemById(id);
+        BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+        model.addAttribute("item", item);
+        model.addAttribute("finalPrice", finalPrice);
+        return "item/itemDetail";
+    }
+
     @GetMapping(value = "/admin/item/new")
     public String itemForm(Model model){
         log.info("====================Start:/admin/item/new -> GetMapping======================");

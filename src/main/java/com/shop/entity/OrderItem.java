@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,7 +24,7 @@ public class OrderItem extends BaseEntity{
     @JoinColumn(name = "order_id") // 외래키
     private Order order;
 
-    private int orderPrice;
+    private BigDecimal orderPrice; // BigDecimal 변경 8월19일
     private int count;
     //private LocalDateTime regTime;
     //private LocalDateTime updateTime;
@@ -37,8 +38,8 @@ public class OrderItem extends BaseEntity{
         item.removeStock(count); //
         return orderItem;
     }
-    public int getTotalPrice(){
-        return orderPrice*count;
+    public BigDecimal getTotalPrice(){
+        return orderPrice.multiply(BigDecimal.valueOf(count)); // count BigDecimal로 바꿔서계산 8월19일
     }
 
     public void cancel(){

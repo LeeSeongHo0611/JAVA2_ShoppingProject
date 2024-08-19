@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,9 @@ public class Item extends BaseEntity{
     private String itemNm; // 상품명
 
     @Column(name = "price", nullable = false)
-    private int price; // 가격
+    private BigDecimal price; // 가격 BigDecimal 8월19일변경
+
+    private BigDecimal discountrate;
 
     @Column(nullable = false)
     private int stockNumber; // 수량
@@ -57,6 +60,7 @@ public class Item extends BaseEntity{
     public void updateItem(ItemFormDto itemFormDto){
         this.itemNm = itemFormDto.getItemNm();
         this.price = itemFormDto.getPrice();
+        this.discountrate = itemFormDto.getDiscountrate(); // 할인율 추가 8월19일
         this.stockNumber = itemFormDto.getStockNumber();
         this.itemDetail = itemFormDto.getItemDetail();
         this.itemSellStatus = itemFormDto.getItemSellStatus();
