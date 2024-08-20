@@ -28,6 +28,14 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
+
+    
+    //8월20일 getItemById 추가
+    public Item getItemById(Long id) {
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Item not found with id " + id));
+    }
+
     public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList)
             throws Exception{
         //상품등록

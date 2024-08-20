@@ -280,57 +280,61 @@
         <p class="h3 font-weight-bold" th:text="${itemSearchDto.searchQuery} + ' 검색결과'"></p>
     </div>
 
-    <div class="container text-center" id="product-container">
-        <!-- 베스트 상품 섹션   베스트셀러 클래스로 변경-->
-        <div class="best-seller-container"> <!-- 베스트 상품 배경 컨테이너 추가 -->
-
-            <h2 class="best-seller-header">베스트 상품</h2> <!-- 베스트 상품 제목 추가 -->
-            <div class="row row-cols-5" id="best-product-row">
-                <th:block th:each="item : ${itemBest}">
-                    <div class="col">
-                        <div class="best-seller-card">
-                            <a th:href="'/item/' + ${item.id}" class="text-dark">
-                                <img th:src="${item.images[0].imgUrl}" class="best-seller-img" th:alt="${item.itemNm}" height="400">
-                                <div class="best-seller-details">
-                                    <h4 class="best-seller-title" th:text="${item.itemNm}"></h4>
-                                    <p class="best-seller-stock" th:text="${item.stockNumber + '개'}"></p>
-                                    <!-- 할인율 표시 (있을 경우) 8월19일-->
-                                    <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate.setScale(2)} + '%'"></p>
-
-                                    <!-- 원래 가격 취소선 표시 8월19일-->
-                                    <p class="original-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price + '원'}" style="text-decoration: line-through; color: grey;"></p>
-
-                                    <!-- 할인된 가격 표시 8월19일-->
-                                    <h3 class="best-seller-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price.subtract(item.price.multiply(item.discountrate)) + '원'}"></h3>
-
-                                    <!-- 할인율이 없을 때는 원래 가격만 표시 8월19일-->
-                                    <h3 class="best-seller-price" th:if="${item.discountrate == null || item.discountrate == 0}" th:text="${item.price + '원'}"></h3>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-        </br>
-        <!-- 일반 상품 섹션 -->
-        <h2 class="best-seller-black">전체 상품</h2><!--전체 상품 제목 추가-->
-        <div class="row row-cols-5" id="product-row">
-            <th:block th:each="item : ${items}">
+    <!-- 베스트 상품 섹션 -->
+    <div class="best-seller-container">
+        <h2 class="best-seller-header">베스트 상품</h2>
+        <div class="row row-cols-5" id="best-product-row">
+            <th:block th:each="item : ${itemBest}">
                 <div class="col">
-                    <div class="card">
+                    <div class="best-seller-card">
                         <a th:href="'/item/' + ${item.id}" class="text-dark">
-                            <img th:src="@{${item.imgUrl}}" class="card-img-top" th:alt="${item.itemNm}" height="400">
-                            <div class="card-body">
-                                <h4 class="card-title">[[${item.itemNm}]]</h4>
-                                <p class="card-text">[[${item.stockNumber}]]개</p>
-                                <h3 class="card-title text-danger">[[${item.price}]]원</h3>
+                            <img th:src="${item.images[0].imgUrl}" class="best-seller-img" th:alt="${item.itemNm}" height="400">
+                            <div class="best-seller-details">
+                                <h4 class="best-seller-title" th:text="${item.itemNm}"></h4>
+                                <p class="best-seller-stock" th:text="${item.stockNumber + '개'}"></p>
+
+                                <!-- 할인율 표시 (있을 경우) 8월20일 수정-->
+                                <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate.setScale(2)} + '%'"></p>
+
+                                <!-- 원래 가격 취소선 표시 8월20일 수정-->
+                                <p class="original-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price + '원'}" style="text-decoration: line-through; color: grey;"></p>
+
+                                <!-- 백엔드에서 계산된 최종 가격 표시 8월20일 수정-->
+                                <h3 class="best-seller-price" th:text="${item.finalPrice} + '원'"></h3>
                             </div>
                         </a>
                     </div>
                 </div>
             </th:block>
         </div>
+    </div>
+
+    <!-- 일반 상품 섹션 -->
+    <h2 class="best-seller-black">전체 상품</h2>
+    <div class="row row-cols-5" id="product-row">
+        <th:block th:each="item : ${items}">
+            <div class="col">
+                <div class="card">
+                    <a th:href="'/item/' + ${item.id}" class="text-dark">
+                        <img th:src="@{${item.imgUrl}}" class="card-img-top" th:alt="${item.itemNm}" height="400">
+                        <div class="card-body">
+                            <h4 class="card-title">[[${item.itemNm}]]</h4>
+                            <p class="card-text">[[${item.stockNumber}]]개</p>
+
+                            <!-- 할인율 표시 (있을 경우) 8월20일 수정-->
+                            <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate.setScale(2)} + '%'"></p>
+
+                            <!-- 원래 가격 취소선 표시 8월20일 수정-->
+                            <p class="original-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price + '원'}" style="text-decoration: line-through; color: grey;"></p>
+
+                            <!-- 백엔드에서 계산된 최종 가격 표시 8월20일 수정-->
+                            <h3 class="card-title text-danger" th:text="${item.finalPrice} + '원'"></h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </th:block>
+    </div>
     </div>
 </div>
 

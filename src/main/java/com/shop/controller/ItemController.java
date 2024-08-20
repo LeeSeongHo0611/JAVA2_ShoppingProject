@@ -2,6 +2,7 @@ package com.shop.controller;
 
 import com.shop.dto.ItemFormDto;
 import com.shop.dto.ItemSearchDto;
+import com.shop.dto.MainItemDto;
 import com.shop.entity.Item;
 import com.shop.entity.ItemImg;
 import com.shop.service.DiscountService;
@@ -29,24 +30,38 @@ import java.util.stream.Collectors;
 
 @Log
 @Controller
-@RequiredArgsConstructor
+@RequiredArgsConstructor // final, @nonNull 로 선언된 필드 포함하는 생성자를 자동생성
 public class ItemController {
     private final ItemService itemService;
 
     private final DiscountService discountService; // 8월19일 추가
 //
-    public ItemController(DiscountService discountService) {
-        this.discountService = discountService;
-    }
+@GetMapping("/item/{id}") // 8월20일 수정  service에서 할인율 계산로직 가져옴
+public String getItem(@PathVariable("id") Long id, Model model) {
 
-    @GetMapping("/item/{id}")
-    public String getItem(@PathVariable("id") Long id, Model model) {
-        Item item = itemService.getItemById(id);
-        BigDecimal finalPrice = discountService.calculateFinalPrice(item);
-        model.addAttribute("item", item);
-        model.addAttribute("finalPrice", finalPrice);
-        return "item/itemDetail";
-    }
+    log.info("Start: getItem() - id: " + id); // 메소드 시작 시 로그 8월20일추가
+
+
+    Item item = itemService.getItemById(id);
+    BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+
+    MainItemDto mainItemDto = new MainItemDto(
+            item.getId(),
+            item.getItemNm(),
+            item.getItemDetail(),
+            null, // imgUrl은 필요에 따라 설정하세요
+            item.getPrice(),
+            item.getDiscountrate(),
+            item.getStockNumber(),
+            finalPrice // 최종 가격 전달
+    );
+
+    model.addAttribute("item", mainItemDto);
+    log.info("End: getItem() - MainItemDto: " + mainItemDto); // 메소드 종료 시 로그 8월20일추가
+
+    return "item/itemDetail";
+}
+
 
     @GetMapping(value = "/admin/item/new")
     public String itemForm(Model model){
