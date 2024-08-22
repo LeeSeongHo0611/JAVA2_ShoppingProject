@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
 @Service
-public class DiscountService { // 할인율메서드 8월19일
+public class DiscountService { // 할인율메서드 8월19일    8월22일 현재 안쓰는중 엔티티에서 할인율계산중
     public BigDecimal calculateFinalPrice(Item item) {
         // 할인율이 null이면 0으로 처리
         BigDecimal discountRate = item.getDiscountrate() != null ? item.getDiscountrate() : BigDecimal.ZERO;

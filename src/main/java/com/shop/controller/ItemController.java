@@ -36,7 +36,7 @@ public class ItemController {
 
     private final DiscountService discountService; // 8월19일 추가
 //
-@GetMapping("/item/{id}") // 8월20일 수정  service에서 할인율 계산로직 가져옴
+@GetMapping("/item/{id}") // 8월20일 수정
 public String getItem(@PathVariable("id") Long id, Model model) {
 
     log.info("Start: getItem() - id: " + id); // 메소드 시작 시 로그 8월20일추가
@@ -58,6 +58,7 @@ public String getItem(@PathVariable("id") Long id, Model model) {
 
     model.addAttribute("item", mainItemDto);
     log.info("End: getItem() - MainItemDto: " + mainItemDto); // 메소드 종료 시 로그 8월20일추가
+    log.info("Model item class: " + model.getAttribute("item").getClass().getName()); // 모델아이템클래스 item객체확인 로그 8월21일
 
     return "item/itemDetail";
 }

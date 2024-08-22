@@ -38,6 +38,17 @@ public class MainController {
         // 모델에 이미지 리스트 추가
         model.addAttribute("mainImages", mainImages);
 
+        // MainItemDto 객체 제대로 생성되는지 확인용 로그 추가 8월21일
+        if (items.hasContent()) {
+            items.getContent().forEach(item -> {
+                System.out.println("Item Name: " + item.getItemNm());
+                System.out.println("Final Price: " + item.getFinalPrice());
+                System.out.println("Item Class: " + item.getClass().getName());
+            });
+        } else {
+            System.out.println("No items found.");
+        }
+
         model.addAttribute("items", items);
         model.addAttribute("itemSearchDto", itemSearchDto);
         model.addAttribute("maxPage", 5);

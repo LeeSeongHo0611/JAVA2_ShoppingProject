@@ -293,14 +293,15 @@
                                 <h4 class="best-seller-title" th:text="${item.itemNm}"></h4>
                                 <p class="best-seller-stock" th:text="${item.stockNumber + '개'}"></p>
 
-                                <!-- 할인율 표시 (있을 경우) 8월20일 수정-->
+                                <!-- 할인율 표시 (있을 경우) 8월22일 수정-->
                                 <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate.setScale(2)} + '%'"></p>
 
-                                <!-- 원래 가격 취소선 표시 8월20일 수정-->
+                                <!-- 원래 가격 취소선 표시 8월22일 수정-->
                                 <p class="original-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price + '원'}" style="text-decoration: line-through; color: grey;"></p>
 
-                                <!-- 백엔드에서 계산된 최종 가격 표시 8월20일 수정-->
-                                <h3 class="best-seller-price" th:text="${item.finalPrice} + '원'"></h3>
+                                <!-- 백엔드에서 계산된 최종 가격 표시  8월22일 수정-->
+                                <!--toPlainString()은 Item엔티티에서 E 표기법 문제 해결위해 추가-->
+                                <h3 class="best-seller-price" th:text="${item.finalPrice.toPlainString()} + '원'"></h3>
                             </div>
                         </a>
                     </div>
@@ -321,14 +322,15 @@
                             <h4 class="card-title">[[${item.itemNm}]]</h4>
                             <p class="card-text">[[${item.stockNumber}]]개</p>
 
-                            <!-- 할인율 표시 (있을 경우) 8월20일 수정-->
+                            <!-- 할인율 표시 (있을 경우) 8월22일 수정-->
                             <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate.setScale(2)} + '%'"></p>
 
-                            <!-- 원래 가격 취소선 표시 8월20일 수정-->
+                            <!-- 원래 가격 취소선 표시 8월22일 수정-->
                             <p class="original-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price + '원'}" style="text-decoration: line-through; color: grey;"></p>
 
-                            <!-- 백엔드에서 계산된 최종 가격 표시 8월20일 수정-->
-                            <h3 class="card-title text-danger" th:text="${item.finalPrice} + '원'"></h3>
+                            <!-- 백엔드에서 계산된 최종 가격 표시 8월22일 수정-->
+                            <!--toPlainString()은 Item엔티티에서 E 표기법 문제 해결위해 추가-->
+                            <h3 class="card-title text-danger" th:text="${item.finalPrice.toPlainString()} + '원'"></h3>
                         </div>
                     </a>
                 </div>
@@ -527,7 +529,21 @@
                                             <div class="card-body">
                                                 <h4 class="card-title">${item.itemNm}</h4>
                                                 <p class="card-text">${item.stockNumber}개</p>
-                                                <h3 class="card-title text-danger">${item.price}원</h3>
+
+                                                <!-- 할인율 표시 8월22일-->
+                                                ${item.discountrate > 0 ? `
+                                                    <p class="discount-rate">${item.discountrate}%</p>
+                                                ` : ''}
+
+                                                <!-- 원래 가격 표시 (취소선) 8월22일-->
+                                                ${item.discountrate > 0 ? `
+                                                    <p class="original-price" style="text-decoration: line-through; color: grey;">
+                                                        ${item.price}원
+                                                    </p>
+                                                ` : ''}
+
+                                                <!-- 최종 가격 표시 toPlainString()쓰면 출력안되는 오류남 안넣어도 잘돌아감 8월22일 -->
+                                                <h3 class="card-title text-danger">${item.finalPrice}원</h3>
                                             </div>
                                         </a>
                                     </div>

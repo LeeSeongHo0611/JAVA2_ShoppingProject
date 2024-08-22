@@ -2,6 +2,7 @@ package com.shop.repository;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shop.constant.ItemSellStatus;
@@ -9,6 +10,7 @@ import com.shop.dto.ItemSearchDto;
 import com.shop.dto.MainItemDto;
 import com.shop.dto.QMainItemDto;
 import com.shop.entity.*;
+import com.shop.service.DiscountService;
 import jakarta.persistence.EntityManager;
 import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
@@ -25,11 +27,16 @@ import static com.shop.entity.QItem.item;
 @Log
 
 public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
+
+
     private JPAQueryFactory queryFactory; // 동적쿼리 사용하기 위해 JPAQueryFactory 변수 선언
+    private final DiscountService discountService; // DiscountService 변수 추가 8월21일
+    
     // 생성자
-    public ItemRepositoryCustomImpl(EntityManager em){
+    public ItemRepositoryCustomImpl(EntityManager em, DiscountService discountService){
         log.info("ItemRepositoryCustomImpl");
         this.queryFactory = new JPAQueryFactory(em); // JPAQueryFactory 실질적인 객체가 만들어 집니다.
+        this.discountService = discountService; // DiscountService 주입 8월21일
     }
 
     private BooleanExpression searchSellStatusEq(ItemSellStatus searchSellStatus){
@@ -82,12 +89,16 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
     }
 
 
-    // finalPrice를 미리 계산 8월20일
-    NumberExpression<BigDecimal> finalPrice = item.price.subtract(item.price.multiply(item.discountrate));
+
+
     @Override
-    public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable){ // 8월20일 수정
+    public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable){ // 8월21일 수정
         QItem item = QItem.item;
         QItemImg itemImg = QItemImg.itemImg;
+
+        // 계산된 finalPrice를 로그로 출력 8월21일
+        log.info("Starting getMainItemPage" );
+
         //select i.id,id.itemNm,i.itemDetail,im.itemImg, i.price from item i, itemimg im join i.id = im.itemid
         //where im.repImgYn = "Y" and i.itemNm like %searchQuery% order by i.id desc
         //QMainItemDto @QueryProjection을 하용하면 DTO로 바로 조회 가능
@@ -95,13 +106,24 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
                         item.itemDetail,itemImg.imgUrl,item.price,
                         item.discountrate, // 할인율 추가 8월20일
                         item.stockNumber,
-                        finalPrice // 계산된 최종가격 전달 8월20일
+                        Expressions.constant(BigDecimal.ZERO) // finalPrice의 초기값을 0으로설정 8월22일
                         ))
                 // join 내부조인 .repImgYn.eq("Y") 대표이미지만 가져온다.
                 .from(itemImg).join(itemImg.item, item).where(itemImg.repImgYn.eq("Y"))
                 .where(itemNmLike(itemSearchDto.getSearchQuery()))
                 .orderBy(item.id.desc()).offset(pageable.getOffset()).limit(pageable.getPageSize()).fetchResults();
         List<MainItemDto> content = results.getResults();
+
+        // 각 아이템에 대해 최종 가격을 계산하고 설정 8월21일    8월22일 수정
+        for (MainItemDto dto : content) {
+
+            // 데이터베이스에서 가져온 각 아이템에 대해 최종 가격을 설정 8월22일
+            Item itemEntity = new Item();
+            itemEntity.setPrice(dto.getPrice());
+            itemEntity.setDiscountrate(dto.getDiscountrate());
+            dto.setFinalPrice(itemEntity.getFinalPrice()); // Item 엔티티의 getFinalPrice() 사용 8월22일
+        }
+
         long total = results.getTotal();
         return new PageImpl<>(content, pageable,total);
     }

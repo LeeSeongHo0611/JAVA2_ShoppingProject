@@ -28,5 +28,9 @@ public class MainItemDto {
         this.discountrate = discountrate;
         this.stockNumber = stockNumber;
         this.finalPrice = finalPrice;
+
+        // 로그 추가 8월21일
+        System.out.println("MainItemDto created - id: " + id + ", itemNm: " + itemNm + ", finalPrice: " + finalPrice);
+
     }
 }

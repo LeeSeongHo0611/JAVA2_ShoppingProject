@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class Item extends BaseEntity{
     @Column(name = "price", nullable = false)
     private BigDecimal price; // 가격 BigDecimal 8월19일변경
 
-    private BigDecimal discountrate;
+    private BigDecimal discountrate; // 할인율
 
     @Column(nullable = false)
     private int stockNumber; // 수량
@@ -41,10 +42,6 @@ public class Item extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus; // 상품판매 상태
-
-    //private LocalDateTime regTime; // 등록 시간
-
-    //private LocalDateTime updateTime; // 수정 시간
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -57,6 +54,7 @@ public class Item extends BaseEntity{
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ItemImg> images = new ArrayList<>();
 
+    // 상품 정보 업데이트
     public void updateItem(ItemFormDto itemFormDto){
         this.itemNm = itemFormDto.getItemNm();
         this.price = itemFormDto.getPrice();
@@ -66,16 +64,35 @@ public class Item extends BaseEntity{
         this.itemSellStatus = itemFormDto.getItemSellStatus();
     }
 
+    // 재고 감소
     public void removeStock(int stockNumber){
-        int restStock = this.stockNumber - stockNumber; // 10,  5 / 10, 20
-        if(restStock<0){
+        int restStock = this.stockNumber - stockNumber;
+        if(restStock < 0){
             throw new OutOfStockException("상품의 재고가 부족합니다.(현재 재고 수량: "+this.stockNumber+")");
         }
-        this.stockNumber = restStock; // 5
+        this.stockNumber = restStock;
     }
 
+    // 재고 증가
     public void addStock(int stockNumber){
         this.stockNumber += stockNumber;
     }
 
+    // 할인율이 적용된 최종 가격 십의자리까지만 계산 8월22일
+    public BigDecimal getFinalPrice() {
+        if (this.discountrate != null && this.discountrate.compareTo(BigDecimal.ZERO) > 0) {
+            BigDecimal discount = this.price.multiply(this.discountrate).divide(BigDecimal.valueOf(100), 0, RoundingMode.DOWN);
+            BigDecimal finalPrice = this.price.subtract(discount);
+
+            // 10원 단위에서 반올림 처리
+            return finalPrice.setScale(-1, RoundingMode.HALF_UP);
+        }
+        return this.price.setScale(-1, RoundingMode.HALF_UP);
+    }
+
+    // 가격을 문자열로 반환하여 E 표기법 문제를 해결 8월22일
+    public String getFormattedFinalPrice() {
+        return getFinalPrice().toPlainString() + "원";
+    }
 }
+
