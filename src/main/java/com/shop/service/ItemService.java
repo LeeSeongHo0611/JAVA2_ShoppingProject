@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
+    private final DiscountService discountService; // DiscountService 주입 8월26일
 
     
     //8월20일 getItemById 추가
@@ -68,7 +70,7 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ItemFormDto getItemDtl(Long itemId){
+    public ItemFormDto getItemDtl(Long itemId){ // 8월26일 수정
         log.info("====================start:getItemDtl======================");
         //Entity
         List<ItemImg> itemImgList = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
@@ -86,6 +88,11 @@ public class ItemService {
         // Item -> ItemFormDto modelMapper
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
+
+        //finalPrice 계산 추가 8월26일
+        BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+        itemFormDto.setFinalPrice(finalPrice); // 계산된 finalPrice를 DTO에 설정 8월26일
+
         log.info("====================END:getItemDtl======================");
         return itemFormDto;
     }

@@ -32,6 +32,9 @@ public class ItemFormDto {
     @NotNull(message = "재고는 필수 입력 값입니다.")
     private Integer stockNumber;
 
+    // 최종 가격 필드 추가 8월26일
+    private BigDecimal finalPrice;
+
     private ItemSellStatus itemSellStatus;
     //----------------------------------------------------------------------------
     //ItemImg

@@ -36,35 +36,9 @@ public class ItemController {
 
     private final DiscountService discountService; // 8월19일 추가
 //
-@GetMapping("/item/{id}") // 8월20일 수정
-public String getItem(@PathVariable("id") Long id, Model model) {
-
-    log.info("Start: getItem() - id: " + id); // 메소드 시작 시 로그 8월20일추가
 
 
-    Item item = itemService.getItemById(id);
-    BigDecimal finalPrice = discountService.calculateFinalPrice(item);
-
-    MainItemDto mainItemDto = new MainItemDto(
-            item.getId(),
-            item.getItemNm(),
-            item.getItemDetail(),
-            null, // imgUrl은 필요에 따라 설정하세요
-            item.getPrice(),
-            item.getDiscountrate(),
-            item.getStockNumber(),
-            finalPrice // 최종 가격 전달
-    );
-
-    model.addAttribute("item", mainItemDto);
-    log.info("End: getItem() - MainItemDto: " + mainItemDto); // 메소드 종료 시 로그 8월20일추가
-    log.info("Model item class: " + model.getAttribute("item").getClass().getName()); // 모델아이템클래스 item객체확인 로그 8월21일
-
-    return "item/itemDetail";
-}
-
-
-    @GetMapping(value = "/admin/item/new")
+    @GetMapping(value = "/admin/item/new") // 상품등록페이지
     public String itemForm(Model model){
         log.info("====================Start:/admin/item/new -> GetMapping======================");
         model.addAttribute("itemFormDto",new ItemFormDto());
@@ -72,7 +46,7 @@ public String getItem(@PathVariable("id") Long id, Model model) {
         return "item/itemForm";
     }
 
-    @PostMapping(value = "/admin/item/new")
+    @PostMapping(value = "/admin/item/new") // 상품 입력후 등록버튼
     public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult, Model model,
                           @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
         log.info("====================Start:/admin/item/new -> GetMapping======================");
@@ -98,7 +72,7 @@ public String getItem(@PathVariable("id") Long id, Model model) {
         return "redirect:/";
     }
 
-    @GetMapping(value = "/admin/item/{itemId}")
+    @GetMapping(value = "/admin/item/{itemId}") // 상품수정
     public String itemDtl(@PathVariable("itemId")Long itemId, Model model){
         log.info("====================Start:/admin/item/{itemId} -> GetMapping======================");
         try {
@@ -114,7 +88,7 @@ public String getItem(@PathVariable("id") Long id, Model model) {
         return "item/itemForm";
     }
 
-    @PostMapping(value = "/admin/item/{itemId}")
+    @PostMapping(value = "/admin/item/{itemId}") // 상품수정후 수정버튼
     public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
                              @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList,
                              Model model){
@@ -142,7 +116,7 @@ public String getItem(@PathVariable("id") Long id, Model model) {
     //value 2개인 이유
     //1. 네비게이션에서 상품관리 클릭하면 나오는거
     //2. 상품관리안에서 페이지 이동할 때 받는거
-    @GetMapping(value = {"/admin/items", "/admin/items/{page}"})
+    @GetMapping(value = {"/admin/items", "/admin/items/{page}"}) // 상품관리페이지
     public String itemManage(ItemSearchDto itemSearchDto, @PathVariable("page") Optional<Integer> page,
                              Model model){
         log.info("==================== Start:/admin/items , /admin/items/{page} -> GetMapping ======================");
@@ -159,16 +133,70 @@ public String getItem(@PathVariable("id") Long id, Model model) {
         return "item/itemMng";
     }
 
-    @GetMapping(value = "/item/{itemId}")
+    @GetMapping(value = "/item/{itemId}") // 상품세부정보 페이지
     public String itemDtl(Model model, @PathVariable("itemId")Long itemId){
         log.info("==================== Start:/item/{itemId} -> GetMapping ======================");
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
+
+        // 최종 가격 계산 추가 8월26일
+        BigDecimal finalPrice = discountService.calculateFinalPrice(itemFormDto.createItem());
         model.addAttribute("item",itemFormDto);
         log.info("==================== END:/item/{itemId} -> GetMapping ======================");
         return "item/itemDtl";
     }
+//
+//    @GetMapping("/item/{id}") // 8월20일 수정
+//    public String getItem(@PathVariable("id") Long id, Model model) { // 상품상세정보
+//
+//        log.info("Start: getItem() - id: " + id); // 메소드 시작 시 로그 8월20일추가
+//
+//
+//        Item item = itemService.getItemById(id);
+//        BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+//
+//        MainItemDto mainItemDto = new MainItemDto(
+//                item.getId(),
+//                item.getItemNm(),
+//                item.getItemDetail(),
+//                null, // imgUrl은 필요에 따라 설정하세요
+//                item.getPrice(),
+//                item.getDiscountrate(),
+//                item.getStockNumber(),
+//                finalPrice // 최종 가격 전달
+//        );
+//
+//        model.addAttribute("item", mainItemDto);
+//        log.info("End: getItem() - MainItemDto: " + mainItemDto); // 메소드 종료 시 로그 8월20일추가
+//        log.info("Model item class: " + model.getAttribute("item").getClass().getName()); // 모델아이템클래스 item객체확인 로그 8월21일
+//
+//        return "item/itemDetail";
+//    }
 
-    @GetMapping(value = "/bestItem")
+//    // 사용자 상품 상세 정보 보기 8월26일 위의 두 메소드 합침
+//    @GetMapping("/item/{itemId}")
+//    public String ItemDetails(@PathVariable("itemId") Long itemId, Model model) { // 상품수정 쪽과 메소드 겹쳐서 메소드이름변경
+//        log.info("Start: ItemDetails() - id: " + itemId); // 메소드 시작 시 로그
+//
+//        // 기존 Item 객체를 가져옴
+//        Item item = itemService.getItemById(itemId);
+//        // ItemFormDto로 변환 8월26일
+//        ItemFormDto itemFormDto = ItemFormDto.of(item);
+//
+//        BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+//
+//        // 최종 가격 설정
+//        itemFormDto.setPrice(finalPrice);
+//
+//        //모델에 itemFormDto 추가
+//        model.addAttribute("item", itemFormDto);
+//        log.info("End: ItemDetails() - MainItemDto: " + itemFormDto); // 메소드 종료 시 로그
+//
+//        return "item/itemDtl";
+//    }
+
+
+
+    @GetMapping(value = "/bestItem") // 베스트상품 목록
     public String itemBest(Model model) {
         int limit = 5;
         List<Item> itemBest = itemService.getTopItems(limit);
