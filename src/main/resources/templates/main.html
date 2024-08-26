@@ -521,6 +521,8 @@
                     success: function(data) {
                         console.log('Data loaded successfully:', data);
                         data.content.forEach(item => {
+                        const finalPrice = item.finalPrice ? item.finalPrice : item.price; // finalPrice가 null이면 item.price 사용 8월23일
+                        const finalPriceFormatted = Number(finalPrice).toFixed(0); // 소수점 이하 자릿수를 0으로 설정하여 문자열로 변환 8월23일
                             $('#product-row').append(`
                                 <div class="col">
                                     <div class="card">
@@ -542,8 +544,8 @@
                                                     </p>
                                                 ` : ''}
 
-                                                <!-- 최종 가격 표시 toPlainString()쓰면 출력안되는 오류남 안넣어도 잘돌아감 8월22일 -->
-                                                <h3 class="card-title text-danger">${item.finalPrice}원</h3>
+                                                <!-- 최종 가격 표시 8월23일 수정 -->
+                                                <h3 class="card-title text-danger">${finalPriceFormatted}원</h3>
                                             </div>
                                         </a>
                                     </div>

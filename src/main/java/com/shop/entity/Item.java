@@ -3,13 +3,14 @@ package com.shop.entity;
 import com.shop.constant.ItemSellStatus;
 import com.shop.dto.ItemFormDto;
 import com.shop.exception.OutOfStockException;
+import com.shop.service.DiscountService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.RoundingMode; // 반올림
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Item extends BaseEntity{
 
     @Lob
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String itemDetail;
+    private String itemDetail; // 상품 상세정보
 
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus; // 상품판매 상태
@@ -78,21 +79,35 @@ public class Item extends BaseEntity{
         this.stockNumber += stockNumber;
     }
 
-    // 할인율이 적용된 최종 가격 십의자리까지만 계산 8월22일
-    public BigDecimal getFinalPrice() {
-        if (this.discountrate != null && this.discountrate.compareTo(BigDecimal.ZERO) > 0) {
-            BigDecimal discount = this.price.multiply(this.discountrate).divide(BigDecimal.valueOf(100), 0, RoundingMode.DOWN);
-            BigDecimal finalPrice = this.price.subtract(discount);
+//    // 할인율이 적용된 최종 가격 십의자리까지만 계산 8월22일
+//    public BigDecimal getFinalPrice() {
+//        if (this.discountrate != null && this.discountrate.compareTo(BigDecimal.ZERO) > 0) {
+//            BigDecimal discount = this.price.multiply(this.discountrate).divide(BigDecimal.valueOf(100), 0, RoundingMode.DOWN);
+//            BigDecimal finalPrice = this.price.subtract(discount);
+//
+//            // 10원 단위에서 반올림 처리
+//            return finalPrice.setScale(-1, RoundingMode.HALF_UP);
+//        }
+//        return this.price.setScale(-1, RoundingMode.HALF_UP);
+//    }
+//
+//    // 가격을 문자열로 반환하여 E 표기법 문제를 해결 8월22일
+//    public String getFormattedFinalPrice() {
+//        return getFinalPrice().toPlainString() + "원";
+//    }
 
-            // 10원 단위에서 반올림 처리
-            return finalPrice.setScale(-1, RoundingMode.HALF_UP);
-        }
-        return this.price.setScale(-1, RoundingMode.HALF_UP);
+    @Transient
+    private BigDecimal finalPrice; // 최종 가격, DB에 저장하지 않음 8월22일
+
+    // DiscountService를 사용하여 최종 가격 계산 8월22일
+    public void calculateFinalPrice(DiscountService discountService) {
+        this.finalPrice = discountService.calculateFinalPrice(this);
     }
 
-    // 가격을 문자열로 반환하여 E 표기법 문제를 해결 8월22일
+    // 최종 가격을 문자열로 포맷하여 반환 8월22일
     public String getFormattedFinalPrice() {
-        return getFinalPrice().toPlainString() + "원";
+        return finalPrice.toPlainString() + "원";
     }
+
 }
 

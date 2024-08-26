@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,6 +37,13 @@ public class ItemService {
         return itemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Item not found with id " + id));
     }
+
+    // ID로 Item을 찾는 메서드 추가 8월22일
+    public Item findItemById(Long id) {
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 존재하지 않습니다. ID: " + id));
+    }
+
 
     public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList)
             throws Exception{
@@ -110,6 +119,32 @@ public class ItemService {
         log.info("====================start:getAdminItemPage======================");
         return itemRepository.getMainItemPage(itemSearchDto, pageable);
     }
+
+//    @Transactional(readOnly = true) // 8월23일 수정
+//    public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+//        log.info("====================start:getMainItemPage======================");
+//
+//        // Item 엔티티 리스트를 가져옴
+//        Page<Item> items = itemRepository.getMainItemPage(itemSearchDto, pageable);
+//
+//        // Item 엔티티를 MainItemDto로 변환하면서 formattedFinalPrice를 설정
+//        List<MainItemDto> mainItemDtos = items.stream()
+//                .map(item -> new MainItemDto(
+//                        item.getId(),
+//                        item.getItemNm(),
+//                        item.getItemDetail(),
+//                        item.getImageUrl(),
+//                        item.getPrice(),
+//                        item.getDiscountrate(),
+//                        item.getStockNumber(),
+//                        item.getFormattedFinalPrice()  // 할인된 가격을 포함하여 DTO에 설정
+//                ))
+//                .collect(Collectors.toList());
+//
+//        // Page 객체로 변환하여 반환
+//        return new PageImpl<>(mainItemDtos, pageable, items.getTotalElements());
+//    }
+
 
     public List<Item> getTopItems(int limit) {
         return itemRepository.findTopItemsByOrderCount(limit);
