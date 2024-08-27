@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class OrderService {
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
     private final ItemImgRepository itemImgRepository;
+    private final DiscountService discountService; //DiscountService 주입 8월26일 추가
 
 //    public Long order(OrderDto orderDto, String email) {
 //        Item item = itemRepository.findById(orderDto.getItemId())
@@ -50,8 +52,12 @@ public class OrderService {
                 .orElseThrow(EntityNotFoundException::new);
         Member member = memberRepository.findByEmail(email);
 
+        // 최종 가격 계산 8월26일
+        BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+
+        //주문아이템 생성 시 최종가격을 사용 8월26일
         List<OrderItem> orderItemList = new ArrayList<>();
-        OrderItem orderItem = OrderItem.createOrderItem(item, orderDto.getCount());
+        OrderItem orderItem = OrderItem.createOrderItem(item, orderDto.getCount(), finalPrice); // finalprice 추가 8월26일
         orderItemList.add(orderItem);
 
         Order order = Order.createOrder(member, orderItemList);
@@ -107,8 +113,12 @@ public class OrderService {
         for(OrderDto orderDto : orderDtoList){
             //주문 -> Item Entity 객체 추출
             Item item = itemRepository.findById(orderDto.getItemId()).orElseThrow(EntityNotFoundException::new);
+
+            // 최종 가격 계산 8월26일
+            BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+
             // 주문 Item 생성
-            OrderItem orderItem = OrderItem.createOrderItem(item,orderDto.getCount());
+            OrderItem orderItem = OrderItem.createOrderItem(item, orderDto.getCount(), finalPrice); // 최종가격사용 finalPrice추가 8월26일
             // 주문 Item List에 추가
             orderItemList.add(orderItem);
         }
