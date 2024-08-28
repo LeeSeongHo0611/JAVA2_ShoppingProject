@@ -24,9 +24,11 @@
             var orderTotalPrice = 0;
             $("input[name=cartChkBox]:checked").each(function(){
                 var cartItemId = $(this).val();
-                var price = $("#price_" + cartItemId).attr("data-price");
+
+                <!--price -> finalPrice 변경 8월27일-->
+                var finalPrice = $("#price_" + cartItemId).attr("data-price");
                 var count = $("#count_" + cartItemId).val();
-                orderTotalPrice += price * count;
+                orderTotalPrice += finalPrice * count;
             });
 
             $("#orderTotalPrice").html(orderTotalPrice+'원');
@@ -35,8 +37,10 @@
         function changeCount(obj){
             var count = obj.value;
             var cartItemId = obj.id.split('_')[1];
-            var price = $("#price_"+cartItemId).data("price");
-            var totalPrice = count * price;
+
+            <!--price -> finalPrice 변경 8월27일-->
+            var finalPrice = $("#price_"+cartItemId).data("price");
+            var totalPrice = count * finalPrice;
             $("#totalPrice_" + cartItemId).html(totalPrice+"원");
             getOrderTotalPrice();
             updateCartItemCount(cartItemId, count);
@@ -221,8 +225,11 @@
                         <span th:text="${cartItem.itemNm}" class="f24 font-weight-bold"></span>
                         <div class="fs18 font-weight-light">
                                 <span class="input-group mt-2">
-                                    <span th:id="'price_' + ${cartItem.cartItemId}" th:data-price="${cartItem.price}"
-                                          th:text="${cartItem.price} + '원'" class="align-self-center mr-2">
+
+                                    <!--cartItem.price -> cartItem.finalPrice 수정 8월27일-->
+                                    <span th:id="'price_' + ${cartItem.cartItemId}" th:data-price="${cartItem.finalPrice}"
+                                          th:text="${cartItem.finalPrice} + '원'" class="align-self-center mr-2">
+
                                     </span>
                                     <input type="number" name="count" th:id="'count_' + ${cartItem.cartItemId}"
                                            th:value="${cartItem.count}" min="1" onchange="changeCount(this)">
@@ -235,8 +242,11 @@
                     </div>
                 </td>
                 <td class="text-center align-middle">
+
+                    <!--cartItem.price -> cartItem.finalPrice 수정 8월27일-->
                     <span th:id="'totalPrice_'+${cartItem.cartItemId}" name="totalPrice"
-                          th:text="${cartItem.price * cartItem.count} + '원'"></span>
+                          th:text="${cartItem.finalPrice * cartItem.count} + '원'"></span>
+
                 </td>
             </tr>
             </tbody>

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final OrderService orderService;
+    private final DiscountService discountService; // DiscountService 주입 8월27일
+
     public Long addCart(CartItemDto cartItemDto, String email){
         log.info("=========Start========");
         Item item = itemRepository.findById(cartItemDto.getItemId())
@@ -60,14 +63,25 @@ public class CartService {
         log.info("=========Start========");
         List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
 
-        Member member = memberRepository.findByEmail(email);
+        Member member = memberRepository.findByEmail(email); // 사용자의 이메일로 Member객체 조회
 
-        Cart cart = cartRepository.findByMemberId(member.getId());
+        Cart cart = cartRepository.findByMemberId(member.getId()); // 사용자의 장바구니 조회
         if(cart == null){
             return cartDetailDtoList;
         }
+
+        // 장바구니 항목들을 불러옵니다 장바구니 항목들 조회
         cartDetailDtoList = cartItemRepository.findCartDetailDtoList(cart.getId());
-        return cartDetailDtoList;
+
+        // 각 항목의 최종 가격을 DiscountService를 통해 계산합니다. 8월27일 추가
+        for (CartDetailDto cartItem : cartDetailDtoList) {
+            Item item = itemRepository.findById(cartItem.getItemId())
+                    .orElseThrow(EntityExistsException::new);
+            BigDecimal finalPrice = discountService.calculateFinalPrice(item); // item의 원래가격을 기준으로 할인된 최종가격 계산
+            cartItem.setFinalPrice(finalPrice); // 할인된 가격으로 장바구니에 설정 8월27일 추가
+        }
+
+        return cartDetailDtoList; // 할인된가격이 적용된 리스트 반환
     }
 
     @Transactional(readOnly = true)
