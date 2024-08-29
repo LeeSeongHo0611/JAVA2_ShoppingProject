@@ -248,7 +248,7 @@
                     <!--toPlainString() E 표기법 문제해결위해 추가 8월28일-->
                     <span th:id="'totalPrice_'+${cartItem.cartItemId}" name="totalPrice"
                           th:text="${cartItem.finalPrice.toPlainString() * cartItem.count} + '원'"></span>
-
+                                    <!--이전버전  cartItem.price-->
                 </td>
             </tr>
             </tbody>
