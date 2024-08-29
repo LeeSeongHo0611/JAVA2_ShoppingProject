@@ -29,10 +29,33 @@ public class Item extends BaseEntity{
     @Column(nullable = false,length = 50)
     private String itemNm; // 상품명
 
-    @Column(name = "price", nullable = false)
+    @Column(name = "price", scale = 0, nullable = false)
     private BigDecimal price; // 가격 BigDecimal 8월19일변경
 
+    //가격, 할인율 소수점 제거 시도한 코드 주석처리
+//    // 가격 Getter 메서드 - 소수점 제거하여 정수로 반환 8월28일
+//    public BigDecimal getPrice() {
+//        return price != null ? price.setScale(0, RoundingMode.DOWN) : BigDecimal.ZERO;
+//    }
+//
+//    // price 필드에 값을 설정할 때 소수점 제거 8월28일
+//    public void setPrice(BigDecimal price) {
+//        this.price = price.setScale(0, RoundingMode.DOWN);
+//    }
+
+    @Column(name = "discountrate", scale=0)
     private BigDecimal discountrate; // 할인율
+
+    //가격, 할인율 소수점 제거 시도한 코드 주석처리
+//    // 할인율 Getter 메서드 - 소수점 제거하여 정수로 반환 8월28일
+//    public BigDecimal getDiscountrate() {
+//        return discountrate != null ? discountrate.setScale(0, RoundingMode.DOWN) : BigDecimal.ZERO;
+//    }
+//
+//    // discountrate 필드에 값을 설정할 때 소수점 제거
+//    public void setDiscountrate(BigDecimal discountrate) {
+//        this.discountrate = discountrate.setScale(0, RoundingMode.DOWN);
+//    }
 
     @Column(nullable = false)
     private int stockNumber; // 수량
@@ -60,6 +83,10 @@ public class Item extends BaseEntity{
         this.itemNm = itemFormDto.getItemNm();
         this.price = itemFormDto.getPrice();
         this.discountrate = itemFormDto.getDiscountrate(); // 할인율 추가 8월19일
+
+        //가격, 할인율 소수점 제거 시도한 코드 주석처리
+//        this.setPrice(itemFormDto.getPrice()); // setPrice통해서 소수점이하 제거한다음에 필드에저장 8월28일
+//        this.setDiscountrate(itemFormDto.getDiscountrate()); // setDiscountrate통해서 소수점이하 제거한 다음에 필드에저장 8월28일
         this.stockNumber = itemFormDto.getStockNumber();
         this.itemDetail = itemFormDto.getItemDetail();
         this.itemSellStatus = itemFormDto.getItemSellStatus();

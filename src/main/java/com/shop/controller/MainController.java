@@ -95,7 +95,8 @@ public class MainController {
         if (items.hasContent()) {
             items.getContent().forEach(item -> {
                 System.out.println("Item Name: " + item.getItemNm());
-                System.out.println("Final Price: " + item.getFinalPrice());
+                System.out.println("그냥 Price: " + item.getPrice().toPlainString());  // 지수 표기법 대신 일반 표기법으로 출력 8월28일
+                System.out.println("Final Price: " + item.getFinalPrice().toPlainString());  // 지수 표기법 대신 일반 표기법으로 출력 8월28일
                 System.out.println("Item Class: " + item.getClass().getName());
             });
         } else {
@@ -103,6 +104,8 @@ public class MainController {
         }
 
         model.addAttribute("items", items);
+        //item 전달 획인로그추가 8월28일
+        System.out.println("Items added to model: " + items.getContent().size());
         model.addAttribute("itemSearchDto", itemSearchDto);
         model.addAttribute("maxPage", 5);
 
@@ -135,6 +138,7 @@ public class MainController {
         System.out.println("AJAX 통신 시작, 페이지: " + page);
         Pageable pageable = PageRequest.of(page, 5);
         return itemService.getMainItemPage(itemSearchDto, pageable);
+
     }
 
     @GetMapping(value = "/mapApi/comingRoute")

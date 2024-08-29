@@ -294,7 +294,8 @@
                                 <p class="best-seller-stock" th:text="${item.stockNumber + '개'}"></p>
 
                                 <!-- 할인율 표시 (있을 경우) 8월22일 수정-->
-                                <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate.setScale(2)} + '%'"></p>
+                                <!--item.discountrate.setscale(2) -> 소수점 제거 위해 setscale 제외 8월28일-->
+                                <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate} + '%'"></p>
 
                                 <!-- 원래 가격 취소선 표시 8월22일 수정-->
                                 <p class="original-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price + '원'}" style="text-decoration: line-through; color: grey;"></p>
@@ -323,7 +324,8 @@
                             <p class="card-text">[[${item.stockNumber}]]개</p>
 
                             <!-- 할인율 표시 (있을 경우) 8월22일 수정-->
-                            <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate.setScale(2)} + '%'"></p>
+                            <!--item.discountrate.setscale(2) -> 소수점 제거 위해 setscale 제외 8월28일-->
+                            <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" th:text="${item.discountrate} + '%'"></p>
 
                             <!-- 원래 가격 취소선 표시 8월22일 수정-->
                             <p class="original-price" th:if="${item.discountrate != null && item.discountrate > 0}" th:text="${item.price + '원'}" style="text-decoration: line-through; color: grey;"></p>
