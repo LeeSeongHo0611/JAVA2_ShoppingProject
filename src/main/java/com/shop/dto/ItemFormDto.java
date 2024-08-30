@@ -2,6 +2,8 @@ package com.shop.dto;
 
 import com.shop.constant.ItemSellStatus;
 import com.shop.entity.Item;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -24,6 +26,9 @@ public class ItemFormDto {
     @NotNull(message = "가격은 필수 입력 값입니다.")
     private BigDecimal price;
 
+    //할인율 오류범위 추가 8월30일
+    @DecimalMin(value = "0.0", inclusive = false, message = "할인율은 0보다 크고 100 미만이어야 합니다.")
+    @DecimalMax(value = "100.0", inclusive = false, message = "할인율은 0보다 크고 100 미만이어야 합니다.")
     private BigDecimal discountrate; // 8월19일 수정
 
     @NotBlank(message = "이름은 필수 입력 값입니다.")
