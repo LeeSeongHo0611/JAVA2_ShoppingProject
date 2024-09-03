@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -138,8 +137,8 @@ public class ItemController {
         log.info("==================== Start:/item/{itemId} -> GetMapping ======================");
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
 
-        // 최종 가격 계산 추가 8월26일
-        BigDecimal finalPrice = discountService.calculateFinalPrice(itemFormDto.createItem());
+        // 최종 가격 계산 추가 8월26일 int로 변경 9월3일
+        int finalPrice = discountService.calculateFinalPrice(itemFormDto.createItem());
         model.addAttribute("item",itemFormDto);
         log.info("==================== END:/item/{itemId} -> GetMapping ======================");
         return "item/itemDtl";

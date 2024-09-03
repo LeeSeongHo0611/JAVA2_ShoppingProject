@@ -95,8 +95,8 @@ public class MainController {
         if (items.hasContent()) {
             items.getContent().forEach(item -> {
                 System.out.println("Item Name: " + item.getItemNm());
-                System.out.println("그냥 Price: " + item.getPrice().toPlainString());  // 지수 표기법 대신 일반 표기법으로 출력 8월28일
-                System.out.println("Final Price: " + item.getFinalPrice().toPlainString());  // 지수 표기법 대신 일반 표기법으로 출력 8월28일
+                System.out.println("그냥 Price: " + item.getPrice());  // 지수 표기법 대신 일반 표기법으로 출력 8월28일 // 표기법 다시 복구 9월3일
+                System.out.println("Final Price: " + item.getFinalPrice());  // 지수 표기법 대신 일반 표기법으로 출력 8월28일 // 표기법 다시 복구 9월3일
                 System.out.println("Item Class: " + item.getClass().getName());
             });
         } else {

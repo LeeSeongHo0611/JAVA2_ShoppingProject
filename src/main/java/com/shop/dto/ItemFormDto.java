@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +23,12 @@ public class ItemFormDto {
     private String itemNm;
 
     @NotNull(message = "가격은 필수 입력 값입니다.")
-    private BigDecimal price;
+    private int price; // int로 다시 수정 9월3일
 
     //할인율 오류범위 추가 8월30일
     @DecimalMin(value = "0.0", inclusive = false, message = "할인율은 0보다 크고 100 미만이어야 합니다.")
     @DecimalMax(value = "100.0", inclusive = false, message = "할인율은 0보다 크고 100 미만이어야 합니다.")
-    private BigDecimal discountrate; // 8월19일 수정
+    private int discountrate; // 8월19일 수정 // int로 다시 수정 9월3일
 
     @NotBlank(message = "이름은 필수 입력 값입니다.")
     private  String itemDetail;
@@ -37,8 +36,8 @@ public class ItemFormDto {
     @NotNull(message = "재고는 필수 입력 값입니다.")
     private Integer stockNumber;
 
-    // 최종 가격 필드 추가 8월26일
-    private BigDecimal finalPrice;
+    // 최종 가격 필드 추가 8월26일 // int로 다시 수정 9월3일
+    private int finalPrice;
 
     private ItemSellStatus itemSellStatus;
     //----------------------------------------------------------------------------

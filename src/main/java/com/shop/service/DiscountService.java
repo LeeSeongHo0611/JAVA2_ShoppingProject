@@ -26,22 +26,23 @@ package com.shop.service;
 import com.shop.entity.Item;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode; // 반올림
 
 @Service
 public class DiscountService {
 
     // 할인율이 적용된 최종 가격 계산 메서드 8월22일
-    public BigDecimal calculateFinalPrice(Item item) {
-        BigDecimal discountRate = item.getDiscountrate() != null ? item.getDiscountrate() : BigDecimal.ZERO; // 할인율이 null이면 0으로 처리
-        BigDecimal price = item.getPrice(); // 원래 가격 가져오기
+    public int calculateFinalPrice(Item item) {
+        // 할인율을 가져오고, null이면 0을 할당 9월3일 변경
+        Integer discountRateObj = item.getDiscountrate();
+        int discountRate = discountRateObj != null ? discountRateObj : 0;
+        int price = item.getPrice(); // 원래 가격 가져오기
 
-        if (discountRate.compareTo(BigDecimal.ZERO) > 0) { // 할인율이 0보다 크면 할인 적용
-            BigDecimal discount = price.multiply(discountRate).divide(BigDecimal.valueOf(100), 0, RoundingMode.DOWN); // 할인율 0~99 사이로 입력하기때문에  100으로 나눔, 소수점 이하 버림
-            BigDecimal finalPrice = price.subtract(discount); // 최종 가격 계산
-            return finalPrice.setScale(-1, RoundingMode.HALF_UP); // 십의 자리에서 반올림
+        if (discountRate > 0) { // 할인율이 0보다 크면 할인 적용 int로 변경 맞게 표현식도변경 9월3일
+            int discount = (price * discountRate) / 100; // 할인율 0~99 사이로 입력하기때문에  100으로 나눔, 소수점 이하 버림  int에 맞게 표현식도 변경 9월3일
+            int finalPrice = price - discount; // 최종 가격 계산   int에 맞게 표현식도 변경 9월3일
+            return Math.round(finalPrice / 10.0f) * 10; // 십의 자리에서 반올림 int에 맞게 표현식도 변경 9월3일
         }
-        return price.setScale(-1, RoundingMode.HALF_UP); // 십의 자리에서 반올림한 원래 가격 반환
+        return Math.round(price / 10.0f) * 10; // 십의 자리에서 반올림한 원래 가격 반환  int에 맞게 표현식도 변경 9월3일
     }
 }

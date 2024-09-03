@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,7 +89,7 @@ public class ItemService {
         itemFormDto.setItemImgDtoList(itemImgDtoList);
 
         //finalPrice 계산 추가 8월26일
-        BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+        int finalPrice = discountService.calculateFinalPrice(item); // int로 다시 변경 9월3일
         itemFormDto.setFinalPrice(finalPrice); // 계산된 finalPrice를 DTO에 설정 8월26일
 
         log.info("====================END:getItemDtl======================");

@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class ThymeleafExController {
         ItemDto itemDto = new ItemDto();
         itemDto.setItemDetail("상품 상세 설명");
         itemDto.setItemNm("테스트 상품1");
-        itemDto.setPrice(BigDecimal.valueOf(10000));  // 숫자를 BigDecimal로 변환하여 설정 8월19일
+        itemDto.setPrice(10000);  // 숫자를 BigDecimal로 변환하여 설정 8월19일 다시 int형식에 맞게설정 9월3일
         itemDto.setRegTime(LocalDateTime.now());
         model.addAttribute("itemDto",itemDto);
         return "thymeleafEx/thymeleafEx02";
@@ -40,7 +39,7 @@ public class ThymeleafExController {
         for(int i = 1;i<=10;i++){
             ItemDto item = new ItemDto();
             item.setItemNm("테스트 상품" + i);
-            item.setPrice(BigDecimal.valueOf(10000 + i)); // BigDecimal로 표현식 변경 8월19일
+            item.setPrice(10000); // BigDecimal로 표현식 변경 8월19일 // 다시 int형식에 맞게설정 9월3일
             item.setItemDetail("테스트 상품 상세 설명" + i);
             item.setSellStatCd("SELL");
             item.setRegTime(LocalDateTime.now());
@@ -56,7 +55,7 @@ public class ThymeleafExController {
         for(int i = 1;i<=10;i++){
             ItemDto item = new ItemDto();
             item.setItemNm("테스트 상품" + i);
-            item.setPrice(BigDecimal.valueOf(10000 + i)); // BigDecimal로 표현식 변경 8월19일
+            item.setPrice(10000); // BigDecimal로 표현식 변경 8월19일 다시 int형식에 맞게 변경 9월3일
             item.setItemDetail("테스트 상품 상세 설명" + i);
             item.setSellStatCd("SELL");
             item.setRegTime(LocalDateTime.now());

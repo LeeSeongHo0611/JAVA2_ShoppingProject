@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.thymeleaf.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -106,7 +105,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
                             item.itemDetail,itemImg.imgUrl,item.price,
                             item.discountrate, // 할인율 추가 8월20일
                             item.stockNumber,
-                            Expressions.constant(BigDecimal.ZERO) // finalPrice의 초기값을 0으로설정 8월22일
+                            Expressions.constant(0) // finalPrice의 초기값을 0으로설정 8월22일
                             ))
                     // join 내부조인 .repImgYn.eq("Y") 대표이미지만 가져온다.
                     .from(itemImg).join(itemImg.item, item).where(itemImg.repImgYn.eq("Y"))
@@ -124,7 +123,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
                 itemEntity.setDiscountrate(dto.getDiscountrate());
                 log.info("Item DTO 생성 전: " + dto); // 로그찍어보기 8월23일
                 
-                BigDecimal finalPrice = discountService.calculateFinalPrice(itemEntity);// DiscountService를 사용하여 최종 가격 계산 8월26일
+                int finalPrice = discountService.calculateFinalPrice(itemEntity);// DiscountService를 사용하여 최종 가격 계산 8월26일 int로 다시 변경 9월3일
                 
                 dto.setFinalPrice(finalPrice);// 계산된 최종 가격을 DTO에 설정 8월26일
                 log.info("Item DTO 생성 후, 최종 가격 설정: ID=" + dto.getId() + ", 이름=" + dto.getItemNm() + ", 최종 가격=" + dto.getFinalPrice());

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,11 +76,11 @@ public class CartService {
         for (CartDetailDto cartItem : cartDetailDtoList) {
             Item item = itemRepository.findById(cartItem.getItemId())
                     .orElseThrow(EntityExistsException::new);
-            BigDecimal finalPrice = discountService.calculateFinalPrice(item); // item의 원래가격을 기준으로 할인된 최종가격 계산
+            int finalPrice = discountService.calculateFinalPrice(item); // item의 원래가격을 기준으로 할인된 최종가격 계산 totalPrice += orderItem.getTotalPrice();
             cartItem.setFinalPrice(finalPrice); // 할인된 가격으로 장바구니에 설정 8월27일 추가
             
             //8월28일 추가
-            String formattedFinalPrice = finalPrice.toPlainString() + "원"; // 문자열 포맷팅
+            String formattedFinalPrice = finalPrice + "원"; // 문자열 포맷팅
             // 템플릿에서 바로 사용하기 위해 cartItem에 새로운 필드를 추가하지 않고 포맷팅된 문자열을 생성
             cartItem.setFinalPrice(finalPrice); // 만약 이 값이 그대로 필요하다면 설정
             // 여기서 formattedFinalPrice를 사용하는 대신, 템플릿에서 직접 포맷팅하도록 처리

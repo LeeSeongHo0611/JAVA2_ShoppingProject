@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 
-import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class OrderService {
         Member member = memberRepository.findByEmail(email);
 
         // 최종 가격 계산 8월26일
-        BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+        int finalPrice = discountService.calculateFinalPrice(item); // int로 다시 변경 9월3일
 
         //주문아이템 생성 시 최종가격을 사용 8월26일
         List<OrderItem> orderItemList = new ArrayList<>();
@@ -115,7 +115,7 @@ public class OrderService {
             Item item = itemRepository.findById(orderDto.getItemId()).orElseThrow(EntityNotFoundException::new);
 
             // 최종 가격 계산 8월26일
-            BigDecimal finalPrice = discountService.calculateFinalPrice(item);
+            int finalPrice = discountService.calculateFinalPrice(item); // int로 다시 변경 9월3일
 
             // 주문 Item 생성
             OrderItem orderItem = OrderItem.createOrderItem(item, orderDto.getCount(), finalPrice); // 최종가격사용 finalPrice추가 8월26일

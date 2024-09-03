@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode; // 반올림
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class Item extends BaseEntity{
     private String itemNm; // 상품명
 
     @Column(name = "price", scale = 0, nullable = false)
-    private BigDecimal price; // 가격 BigDecimal 8월19일변경
+    private int price; // 가격 BigDecimal 8월19일변경 // int로 다시 수정 9월3일
 
     //가격, 할인율 소수점 제거 시도한 코드 주석처리
 //    // 가격 Getter 메서드 - 소수점 제거하여 정수로 반환 8월28일
@@ -44,7 +43,7 @@ public class Item extends BaseEntity{
 //    }
 
     @Column(name = "discountrate", scale=0)
-    private BigDecimal discountrate; // 할인율
+    private int discountrate; // 할인율 // int로 다시 수정 9월3일
 
     //가격, 할인율 소수점 제거 시도한 코드 주석처리
 //    // 할인율 Getter 메서드 - 소수점 제거하여 정수로 반환 8월28일
@@ -124,16 +123,16 @@ public class Item extends BaseEntity{
 //    }
 
     @Transient
-    private BigDecimal finalPrice; // 최종 가격, DB에 저장하지 않음 8월22일
+    private int finalPrice; // 최종 가격, DB에 저장하지 않음 8월22일 // int로 다시 수정 9월3일
 
     // DiscountService를 사용하여 최종 가격 계산 8월22일
     public void calculateFinalPrice(DiscountService discountService) {
         this.finalPrice = discountService.calculateFinalPrice(this);
     }
 
-    // 최종 가격을 문자열로 포맷하여 반환 8월22일
+    // 최종 가격을 문자열로 포맷하여 반환 8월22일 // int에 맞게 표시형식 다시변경 9월3일
     public String getFormattedFinalPrice() {
-        return finalPrice.toPlainString() + "원";
+        return finalPrice + "원";
     }
 
 }

@@ -152,15 +152,17 @@
             <div class="h4" th:text="${item.itemNm}"></div>
             <hr class="my-4">
             <!-- 최종 가격을 가져오는 숨겨진 필드 추가 8월26일 -->
-            <input type="hidden" id="finalPrice" th:value="${item.finalPrice.toPlainString()}">
+            <!--int에 맞게 표기법 다시 변경 9월3일-->
+            <input type="hidden" id="finalPrice" th:value="${item.finalPrice}">
             <div class="text-right">
                 <div class="h4 text-danger text-left">
                     <!-- 할인율 표시 (있을 경우) 8월26일 수정-->
-                    <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" style="color:black;" th:text="${item.discountrate.setScale(2)} + '%'"></p>
+                    <p th:if="${item.discountrate != null && item.discountrate > 0}" class="discount-rate" style="color:black;" th:text="${item.discountrate} + '%'"></p>
                     <!-- 원래 가격 표시 (할인율이 있는 경우에만 취소선 적용) -->
                     <span th:if="${item.discountrate != null and item.discountrate > 0}" style="text-decoration:line-through; color:grey;" th:text="${item.price} + '원'"></span>
                     <!-- 최종 가격 표시 -->
-                    <h3 class="text-danger" th:text="${item.finalPrice.toPlainString()} + '원'"></h3>
+                    <!--int에 맞게 표기법 다시 변경 9월3일-->
+                    <h3 class="text-danger" th:text="${item.finalPrice} + '원'"></h3>
                 </div>
                 <div class="input-group w-50">
                     <div class="input-group-prepend">

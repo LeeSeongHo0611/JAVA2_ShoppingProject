@@ -228,8 +228,9 @@
 
                                     <!--cartItem.price -> cartItem.finalPrice 수정 8월27일-->
                                     <!--toPlainString() E 표기법 문제해결위해 추가 8월28일-->
+                                    <!--다시 int에 맞게 표기법 변경 9월3일-->
                                     <span th:id="'price_' + ${cartItem.cartItemId}" th:data-price="${cartItem.finalPrice}"
-                                          th:text="${cartItem.finalPrice.toPlainString()} + '원'" class="align-self-center mr-2">
+                                          th:text="${cartItem.finalPrice} + '원'" class="align-self-center mr-2">
 
                                     </span>
                                     <input type="number" name="count" th:id="'count_' + ${cartItem.cartItemId}"

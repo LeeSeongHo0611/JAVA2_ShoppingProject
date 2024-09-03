@@ -3,7 +3,7 @@ package com.shop.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class ItemDto {
     private Long id;
     private String itemNm;
-    private BigDecimal price; // 8월19일 수정
+    private int price; // 8월19일 수정  // 9월3일 int로 다시수정
     private String itemDetail;
     private String sellStatCd;
     private LocalDateTime regTime;

@@ -302,7 +302,8 @@
 
                                 <!-- 백엔드에서 계산된 최종 가격 표시  8월22일 수정-->
                                 <!--toPlainString()은 Item엔티티에서 E 표기법 문제 해결위해 추가-->
-                                <h3 class="best-seller-price" th:text="${item.finalPrice.toPlainString()} + '원'"></h3>
+                                <!--int에 맞게 다시 표기법 변경 9월3일-->
+                                <h3 class="best-seller-price" th:text="${item.finalPrice} + '원'"></h3>
                             </div>
                         </a>
                     </div>
@@ -332,7 +333,8 @@
 
                             <!-- 백엔드에서 계산된 최종 가격 표시 8월22일 수정-->
                             <!--toPlainString()은 Item엔티티에서 E 표기법 문제 해결위해 추가-->
-                            <h3 class="card-title text-danger" th:text="${item.finalPrice.toPlainString()} + '원'"></h3>
+                            <!--int에 맞게 다시 표기법 변경 9월3일-->
+                            <h3 class="card-title text-danger" th:text="${item.finalPrice} + '원'"></h3>
                         </div>
                     </a>
                 </div>
