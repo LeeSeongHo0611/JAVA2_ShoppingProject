@@ -34,6 +34,8 @@
             $("#orderTotalPrice").html(orderTotalPrice+'원');
         }
 
+
+
         function changeCount(obj){
             var count = obj.value;
             var cartItemId = obj.id.split('_')[1];
@@ -225,6 +227,21 @@
                         <span th:text="${cartItem.itemNm}" class="f24 font-weight-bold"></span>
                         <div class="fs18 font-weight-light">
                                 <span class="input-group mt-2">
+
+                                    <!-- 할인율 표시 (있을 경우) 9월6일 수정 -->
+                                    <p th:id="'discount_' + ${cartItem.cartItemId}"
+                                       th:if="${cartItem.discountrate != null && cartItem.discountrate > 0}"
+                                       class="discount-rate"
+                                       th:data-discount="${cartItem.discountrate}"
+                                       th:text="${cartItem.discountrate} + '%'"></p>
+
+                                                                        <!-- 원래 가격 취소선 표시 (있을 경우) 9월6일 수정-->
+                                    <p th:id="'oprice_' + ${cartItem.cartItemId}"
+                                       th:if="${cartItem.discountrate != null && cartItem.discountrate > 0}"
+                                       class="original-price"
+                                       th:data-price="${cartItem.price}"
+                                       th:text="${cartItem.price} + '원'"
+                                       style="text-decoration: line-through; color: grey;"></p>
 
                                     <!--cartItem.price -> cartItem.finalPrice 수정 8월27일-->
                                     <!--toPlainString() E 표기법 문제해결위해 추가 8월28일-->
